@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
 OpenAI Codex solver for gamedev benchmark tasks.
-Uses Codex CLI with MCP server for Godot screenshots.
+Uses Codex CLI for OpenAI-compatible models, and Gemini CLI (Vertex path)
+for Gemini models when OpenAI-compatible endpoint is not configured.
 """
 
 import json
@@ -28,9 +29,10 @@ class CodexSolver(BaseSolver):
         debug: bool = False,
         use_mcp: bool = False,
         model: Optional[str] = None,
-        approval_policy: str = "never",      # never | auto-edit | full-auto
+        approval_policy: str = "never",      # untrusted | on-failure | on-request | never
         sandbox: str = "workspace-write",    # read-only | workspace-write | danger-full-access
         use_runtime_video: bool = False,
+        api_base: Optional[str] = None,
     ):
         # Call parent constructor (handles MCP validation)
         super().__init__(timeout_seconds, debug, use_mcp, use_runtime_video)
@@ -39,6 +41,17 @@ class CodexSolver(BaseSolver):
         self.model = model
         self.approval_policy = approval_policy
         self.sandbox = sandbox
+        self.api_base = (
+            api_base
+            or os.environ.get("OPENAI_BASE_URL")
+            or os.environ.get("GEMINI_API_BASE")
+        )
+        self.gemini_cli_bin = os.environ.get("GEMINI_CLI_BIN", "gemini")
+        # User-local default for Vertex service account (can override via env).
+        self.vertex_credentials_default = os.environ.get(
+            "GEMINI_VERTEX_CREDENTIALS",
+            "/home/seele003/TTS/gamedevbench-bp/seeles-test-service-account.json",
+        )
 
         # Only configure MCP if enabled
         if use_mcp:
@@ -81,6 +94,186 @@ args = ["run", "gamedevbench-mcp"]
         ]
         return any(keyword in error_lower for keyword in rate_limit_keywords)
 
+    @staticmethod
+    def _is_gemini_model(model: Optional[str]) -> bool:
+        """Check whether model name points to Gemini family."""
+        if not model:
+            return False
+        model_lower = model.lower()
+        return (
+            model_lower.startswith("gemini")
+            or model_lower.startswith("gemini/")
+            or model_lower.startswith("google/")
+        )
+
+    def _build_subprocess_env(self) -> dict:
+        """Build environment for Codex CLI with Gemini/OpenAI compatibility mapping."""
+        env = os.environ.copy()
+
+        # Allow explicit constructor override to set OpenAI-compatible endpoint.
+        if self.api_base and not env.get("OPENAI_BASE_URL"):
+            env["OPENAI_BASE_URL"] = self.api_base
+
+        # Gemini-compatible backends are often OpenAI-compatible APIs with custom env names.
+        if self._is_gemini_model(self.model):
+            if not env.get("OPENAI_API_KEY"):
+                gemini_key = env.get("GEMINI_API_KEY") or env.get("GOOGLE_API_KEY")
+                if gemini_key:
+                    env["OPENAI_API_KEY"] = gemini_key
+
+            if not env.get("OPENAI_BASE_URL"):
+                gemini_base = env.get("GEMINI_API_BASE") or env.get("GOOGLE_API_BASE")
+                if gemini_base:
+                    env["OPENAI_BASE_URL"] = gemini_base
+
+        return env
+
+    def _build_gemini_vertex_env(self) -> dict:
+        """Build environment for Gemini CLI with Vertex defaults."""
+        env = os.environ.copy()
+
+        # Prefer explicitly exported credentials; otherwise use user-local default.
+        if not env.get("GOOGLE_APPLICATION_CREDENTIALS") and self.vertex_credentials_default:
+            if os.path.exists(self.vertex_credentials_default):
+                env["GOOGLE_APPLICATION_CREDENTIALS"] = self.vertex_credentials_default
+
+        # Force Vertex mode and avoid OAuth interactive fallback.
+        env.setdefault("GOOGLE_GENAI_USE_VERTEXAI", "true")
+
+        # Fill project id from service account json when missing.
+        if not env.get("GOOGLE_CLOUD_PROJECT"):
+            cred_path = env.get("GOOGLE_APPLICATION_CREDENTIALS")
+            if cred_path and os.path.exists(cred_path):
+                try:
+                    with open(cred_path, "r", encoding="utf-8") as f:
+                        cred_data = json.load(f)
+                    project_id = cred_data.get("project_id")
+                    if project_id:
+                        env["GOOGLE_CLOUD_PROJECT"] = project_id
+                except Exception:
+                    pass
+
+        # Required by user's Vertex workflow; keep global as default.
+        env.setdefault("GOOGLE_CLOUD_LOCATION", "global")
+        env.setdefault("VERTEXAI_LOCATION", "global")
+        return env
+
+    def _should_route_gemini_to_vertex_cli(self, env: dict) -> bool:
+        """Route Gemini model to Gemini CLI when Vertex credentials are available."""
+        if not self._is_gemini_model(self.model):
+            return False
+
+        # If OpenAI-compatible endpoint is explicitly set, keep using Codex path.
+        if env.get("OPENAI_BASE_URL"):
+            return False
+
+        vertex_env = self._build_gemini_vertex_env()
+        return bool(vertex_env.get("GOOGLE_APPLICATION_CREDENTIALS"))
+
+    def _solve_with_gemini_cli(self, prompt: str, start_time: float) -> SolverResult:
+        """Solve task via Gemini CLI (Vertex path) while staying in codex solver framework."""
+        env = self._build_gemini_vertex_env()
+        credentials = env.get("GOOGLE_APPLICATION_CREDENTIALS")
+        if not credentials:
+            return SolverResult(
+                success=False,
+                message=(
+                    "Gemini model selected but no credentials found. "
+                    "Set GOOGLE_APPLICATION_CREDENTIALS or GEMINI_VERTEX_CREDENTIALS."
+                ),
+                duration_seconds=0.0,
+            )
+
+        cmd = [
+            self.gemini_cli_bin,
+            "--yolo",
+            "--output-format",
+            "stream-json",
+        ]
+        if self.model:
+            cmd.extend(["--model", self.model])
+        cmd.extend(["-p", prompt])
+
+        if self.debug:
+            print("\nRouting gemini model via Gemini CLI (Vertex)")
+            print(f"GOOGLE_APPLICATION_CREDENTIALS: {credentials}")
+            print(f"GOOGLE_CLOUD_LOCATION: {env.get('GOOGLE_CLOUD_LOCATION')}")
+            print(f"VERTEXAI_LOCATION: {env.get('VERTEXAI_LOCATION')}")
+
+        try:
+            result = subprocess.run(
+                cmd,
+                capture_output=True,
+                text=True,
+                timeout=self.timeout_seconds,
+                cwd=os.getcwd(),
+                env=env,
+            )
+        except subprocess.TimeoutExpired:
+            duration = time.time() - start_time
+            return SolverResult(
+                success=False,
+                message=f"Gemini CLI execution timed out after {self.timeout_seconds}s",
+                duration_seconds=duration,
+            )
+        except FileNotFoundError:
+            return SolverResult(
+                success=False,
+                message=(
+                    f"Gemini CLI not found: {self.gemini_cli_bin}. "
+                    "Install/configure Gemini CLI or set GEMINI_CLI_BIN."
+                ),
+                duration_seconds=0.0,
+            )
+
+        duration = time.time() - start_time
+        stdout = result.stdout or ""
+        stderr = result.stderr or ""
+
+        auth_prompt_detected = (
+            "Please visit the following URL to authorize the application" in stdout
+            or "Enter the authorization code:" in stdout
+            or "authorization code" in stdout.lower()
+        )
+        if auth_prompt_detected:
+            return SolverResult(
+                success=False,
+                message=(
+                    "Gemini CLI entered interactive OAuth flow instead of Vertex service-account mode. "
+                    "Ensure GOOGLE_GENAI_USE_VERTEXAI=true and GOOGLE_CLOUD_PROJECT are set correctly "
+                    "with a valid GOOGLE_APPLICATION_CREDENTIALS."
+                ),
+                duration_seconds=duration,
+                stdout=stdout,
+                stderr=stderr,
+                model=self.model or "gemini",
+            )
+
+        token_usage = self._parse_gemini_token_usage(stdout)
+        final_response = self._parse_gemini_final_response(stdout) or "No response detected."
+        model_used = self.model or "gemini"
+
+        cost_usd = 0.0
+        if token_usage:
+            cost_usd = token_usage.calculate_cost(model_used)
+
+        message = final_response if result.returncode == 0 else (
+            f"Gemini CLI command failed (exit code {result.returncode})"
+            + (f"\nSTDERR: {stderr.strip()}" if stderr.strip() else "")
+            + (f"\nFinal response: {final_response}" if final_response else "")
+        )
+
+        return SolverResult(
+            success=result.returncode == 0,
+            message=message,
+            duration_seconds=duration,
+            stdout=stdout,
+            stderr=stderr,
+            token_usage=token_usage,
+            model=model_used,
+            cost_usd=cost_usd,
+        )
+
     def solve_task(self) -> SolverResult:
         """Solve the task using Codex CLI."""
         config = self.load_config()
@@ -102,24 +295,50 @@ args = ["run", "gamedevbench-mcp"]
             print("=" * 60)
 
         try:
+            env = self._build_subprocess_env()
+
+            # Gemini path:
+            # 1) If OPENAI_BASE_URL exists, keep Codex CLI (OpenAI-compatible endpoint).
+            # 2) Else if Vertex credentials exist, route to Gemini CLI.
+            if self._should_route_gemini_to_vertex_cli(env):
+                return self._solve_with_gemini_cli(prompt, start_time)
+
+            # Gemini selected without OpenAI-compatible route or Vertex credentials: fail fast.
+            if self._is_gemini_model(self.model) and not env.get("OPENAI_BASE_URL"):
+                return SolverResult(
+                    success=False,
+                    message=(
+                        "Gemini model selected but no route found. "
+                        "Use OPENAI_BASE_URL+OPENAI_API_KEY for OpenAI-compatible Gemini endpoint, "
+                        "or set GOOGLE_APPLICATION_CREDENTIALS (Vertex path)."
+                    ),
+                    duration_seconds=0.0,
+                )
+
             # Build codex exec command
-            cmd = [
-                "codex",
-                "--model", 
-                self.model,
-                "exec",
-                "--skip-git-repo-check",
-                "--yolo",
-                "-s", 
-                "danger-full-access",
-                "-C", 
-                str(os.getcwd()),
-                prompt,
-            ]
+            cmd = ["codex"]
+            if self.model:
+                cmd.extend(["--model", self.model])
+            if self.approval_policy:
+                cmd.extend(["--ask-for-approval", self.approval_policy])
+            cmd.extend(
+                [
+                    "exec",
+                    "--skip-git-repo-check",
+                    "--json",
+                    "-s",
+                    self.sandbox,
+                    "-C",
+                    str(os.getcwd()),
+                    prompt,
+                ]
+            )
 
             if self.debug:
                 cmd_str = " ".join([c if " " not in c else f'"{c}"' for c in cmd[:-1]])
                 print(f"Running: {cmd_str} \"...\"")
+                print(f"OPENAI_BASE_URL set: {'yes' if env.get('OPENAI_BASE_URL') else 'no'}")
+                print(f"OPENAI_API_KEY set: {'yes' if env.get('OPENAI_API_KEY') else 'no'}")
                 print("\nCODEX TRAJECTORY:")
                 print("=" * 60)
 
@@ -130,6 +349,7 @@ args = ["run", "gamedevbench-mcp"]
                 text=True,
                 timeout=self.timeout_seconds,
                 cwd=os.getcwd(),
+                env=env,
             )
 
             duration = time.time() - start_time
@@ -322,6 +542,63 @@ args = ["run", "gamedevbench-mcp"]
                 cache_write_tokens=0,
             )
         return None
+
+    def _parse_gemini_token_usage(self, output: str) -> Optional[TokenUsage]:
+        """Parse Gemini stream-json output for token usage."""
+        total_input = 0
+        total_output = 0
+        total_cached = 0
+
+        for line in output.strip().split("\n"):
+            if not line:
+                continue
+            try:
+                event = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+
+            if event.get("type") == "usage":
+                total_input += event.get("input_tokens", 0)
+                total_output += event.get("output_tokens", 0)
+                total_cached += event.get("cached_tokens", 0)
+
+            usage = event.get("usage", {})
+            if isinstance(usage, dict) and usage:
+                total_input += usage.get("input_tokens", 0)
+                total_output += usage.get("output_tokens", 0)
+                total_cached += usage.get("cached_tokens", 0)
+
+        if total_input > 0 or total_output > 0:
+            return TokenUsage(
+                input_tokens=total_input,
+                output_tokens=total_output,
+                total_tokens=total_input + total_output,
+                cache_read_tokens=total_cached,
+                cache_write_tokens=0,
+            )
+        return None
+
+    def _parse_gemini_final_response(self, output: str) -> Optional[str]:
+        """Parse Gemini stream-json output for final text."""
+        final_response = None
+        for line in output.strip().split("\n"):
+            if not line:
+                continue
+            try:
+                event = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+
+            event_type = event.get("type")
+            if event_type in ("assistant", "message", "content"):
+                text = event.get("text") or event.get("content")
+                if isinstance(text, str) and text.strip():
+                    final_response = text
+
+            if event_type in ("final", "done", "response") and isinstance(event.get("text"), str):
+                final_response = event.get("text")
+
+        return final_response
 
 
 def main():
