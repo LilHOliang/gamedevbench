@@ -46,6 +46,15 @@ class GeminiSolver(BaseSolver):
         # Gemini-specific parameters
         self.use_yolo = use_yolo
         self.model = model
+        self.cli_bin = os.environ.get("GEMINI_CLI_BIN", "gemini")
+
+    def _build_subprocess_env(self) -> dict:
+        """Build environment for Gemini CLI with Vertex global defaults."""
+        env = os.environ.copy()
+        # Prefer explicitly exported values; default to global if unset.
+        env.setdefault("GOOGLE_CLOUD_LOCATION", "global")
+        env.setdefault("VERTEXAI_LOCATION", "global")
+        return env
 
     @staticmethod
     def is_rate_limit_error(error_message: str) -> bool:
@@ -72,12 +81,15 @@ class GeminiSolver(BaseSolver):
         Returns:
             True if server is configured, False otherwise
         """
+        env = self._build_subprocess_env()
+
         # Check if server is already configured by listing MCP servers
         try:
             proc = await asyncio.create_subprocess_exec(
-                "gemini", "mcp", "list",
+                self.cli_bin, "mcp", "list",
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE,
+                env=env,
             )
             stdout_bytes, _ = await proc.communicate()
             stdout = (stdout_bytes or b"").decode(errors="ignore")
@@ -93,9 +105,10 @@ class GeminiSolver(BaseSolver):
                 print("Adding MCP server gamedevbench-mcp...")
 
             proc = await asyncio.create_subprocess_exec(
-                "gemini", "mcp", "add", "gamedevbench-mcp", "uv", "run", "gamedevbench-mcp",
+                self.cli_bin, "mcp", "add", "gamedevbench-mcp", "uv", "run", "gamedevbench-mcp",
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE,
+                env=env,
             )
             await proc.communicate()
 
@@ -141,7 +154,8 @@ class GeminiSolver(BaseSolver):
 
         try:
             # Build gemini command
-            cmd = ["gemini"]
+            cmd = [self.cli_bin]
+            env = self._build_subprocess_env()
 
             if self.use_yolo:
                 cmd.append("--yolo")
@@ -165,6 +179,7 @@ class GeminiSolver(BaseSolver):
                 cwd=os.getcwd(),
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE,
+                env=env,
             )
 
             try:
@@ -225,7 +240,7 @@ class GeminiSolver(BaseSolver):
         except FileNotFoundError:
             return SolverResult(
                 success=False,
-                message="Gemini CLI not found. Install from: https://github.com/google-gemini/gemini-cli",
+                message=f"Gemini CLI not found: {self.cli_bin}. Install/configure your Gemini CLI binary.",
                 duration_seconds=0.0,
             )
         except Exception as e:

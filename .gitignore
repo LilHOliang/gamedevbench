@@ -260,6 +260,7 @@ tasks/test_result*/
 .snapshots/
 tasks/
 tasks_gt/
+tasks.yaml
 
 # tasks.zip
 tasks.zip
@@ -274,3 +275,6 @@ seeles-test-service-account.json
 
 # software-agent-sdk
 software-agent-sdk
+
+# my_report_file
+my_report_file
