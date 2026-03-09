@@ -15,6 +15,8 @@ dependencies = [
     "openhands-sdk; python_version >= '3.12'",
     "openhands-tools; python_version >= '3.12'",
     "brokenaxes>=0.6.2",
+    "nacos-sdk-python>=3.0.4",
+    "python-http-cuda-rpc",
 ]
 
 [project.scripts]
@@ -30,3 +32,6 @@ dev = [
 [tool.setuptools.packages.find]
 where = ["."]
 exclude = ["tasks*", "results*", "scripts*", "gamedevbench_*", "auto_task_generation*", "youtube_documentation*", "anna*", "templates*", "runs*"]
+
+[tool.uv.sources]
+python-http-cuda-rpc = { url = "https://seelemodel.oss-cn-hangzhou.aliyuncs.com/model/python_http_cuda_rpc/python_http_cuda_rpc-1.0.146-py3-none-any.whl" }

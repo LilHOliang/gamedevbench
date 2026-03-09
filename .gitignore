@@ -276,5 +276,12 @@ seeles-test-service-account.json
 # software-agent-sdk
 software-agent-sdk
 
-# my_report_file
-my_report_file
+# my_summary
+my_summary
+
+# game_mcp_server
+game_mcp_server
+/home/seele003/TTS/gamedevbench-bp/.vscode
+
+# /home/seele003/TTS/gamedevbench-bp/my_test_files
+my_test_files/
