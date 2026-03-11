@@ -45,7 +45,7 @@ def create_task_prompt(config: dict, use_runtime_video: bool = False, use_mcp: b
     
     instruction += "\n You must complete the full task without any further assistance."
     instruction += "\n Godot is installed and you can run godot using the `godot` command. It is recommended to run this with a timeout (e.g., `timeout 10 godot` for 10 second timeout) to prevent hanging."
-    instruction += "You are a visual agent and can use images and videos to help you understand the state of the game."
+    instruction += "\n Use available tools and runtime checks to verify changes with concrete evidence."
 
     if use_runtime_video:
         runtime_guidance = """
@@ -60,18 +60,25 @@ def create_task_prompt(config: dict, use_runtime_video: bool = False, use_mcp: b
     if use_mcp:
         mcp_guidance = """
 
-You have access to a Godot MCP (Model Context Protocol) server that provides specialized tools for working with Godot projects.
+You have access to an external MCP (Model Context Protocol) server.
 
-Available MCP Tools:
-- `godot-screenshot`: Takes a screenshot of the Godot editor to help you visualize the current state of the project.
-  - The game directory is the current directory (`./`)
-  - This is useful for understanding the scene hierarchy, node structure, and visual layout
-  - You can use this before making changes to understand the current state, and after to verify your changes
+MCP usage rules:
+- At the beginning, discover available MCP tools first.
+- Only call MCP tools that are actually listed as available.
+- Never invent tool names (for example: `screenshot_game`).
+- Prefer MCP tools when they can directly accomplish the requested change or verification.
+- If both MCP and generic file/shell operations are possible, prioritize MCP first, then fall back to generic tools if needed.
+- Choose tools based on task relevance, expected information gain, and execution reliability.
 
-When to use the MCP tools:
-- Before starting work: Use `godot-screenshot` to understand the current project structure
-- After making changes: Use `godot-screenshot` to verify your changes are correct
-- When debugging: Use `godot-screenshot` to see what the editor looks like and identify issues
+When to use MCP tools:
+- Before starting work: collect task-relevant context if MCP tools can provide it.
+- During implementation: use MCP tools when they reduce uncertainty or avoid assumptions.
+- After making changes: use MCP and/or Godot runtime checks for objective verification.
+- For script/asset/canvas operations: prefer MCP tools as the primary path, and use direct file edits as fallback.
+
+Important:
+- The game directory is the current directory (`./`) unless a tool explicitly requires another path
+- If an MCP call fails, try another relevant MCP tool before switching to pure file editing.
 """
         instruction += mcp_guidance
 

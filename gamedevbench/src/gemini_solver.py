@@ -8,6 +8,9 @@ import asyncio
 import json
 import time
 import os
+from pathlib import Path
+from contextlib import contextmanager
+from datetime import timedelta
 from typing import Optional
 
 from gamedevbench.src.base_solver import BaseSolver
@@ -37,7 +40,7 @@ class GeminiSolver(BaseSolver):
             debug: Enable verbose output
             use_yolo: Use --yolo flag to auto-approve all actions
             model: Model name to pass via --model flag (optional)
-            use_mcp: Whether to use MCP tools (enables gamedevbench-mcp server via gemini mcp enable/disable)
+            use_mcp: Whether to use MCP tools (ensures threejs MCP server is configured via Gemini CLI)
             use_runtime_video: Whether to append Godot runtime video instructions to prompts
         """
         # Call parent constructor (handles MCP validation)
@@ -54,6 +57,33 @@ class GeminiSolver(BaseSolver):
         # Prefer explicitly exported values; default to global if unset.
         env.setdefault("GOOGLE_CLOUD_LOCATION", "global")
         env.setdefault("VERTEXAI_LOCATION", "global")
+        # Force Gemini CLI to use project-local config instead of ~/.gemini.
+        project_root = Path(__file__).resolve().parents[2]
+        env.setdefault("GEMINI_CLI_HOME", str(project_root / ".gemini"))
+
+        # Keep proxies for internet access, but always bypass localhost MCP.
+        for key in ("NO_PROXY", "no_proxy"):
+            cur = env.get(key, "")
+            required = ["127.0.0.1", "localhost"]
+            items = [x.strip() for x in cur.split(",") if x.strip()]
+            for host in required:
+                if host not in items:
+                    items.append(host)
+            env[key] = ",".join(items)
+
+        # Vertex auth requires project id. Infer from service-account file if missing.
+        if env.get("GOOGLE_APPLICATION_CREDENTIALS") and not env.get("GOOGLE_CLOUD_PROJECT"):
+            cred_path = env["GOOGLE_APPLICATION_CREDENTIALS"]
+            try:
+                with open(cred_path, "r", encoding="utf-8") as f:
+                    cred = json.load(f)
+                project_id = cred.get("project_id")
+                if project_id:
+                    env["GOOGLE_CLOUD_PROJECT"] = project_id
+            except Exception:
+                # Best effort only; Gemini CLI will surface a clear auth error if still missing.
+                pass
+
         return env
 
     @staticmethod
@@ -74,7 +104,7 @@ class GeminiSolver(BaseSolver):
         return any(keyword in error_lower for keyword in rate_limit_keywords)
 
     async def _ensure_mcp_server_configured(self) -> bool:
-        """Ensure the gamedevbench-mcp server is configured in Gemini CLI.
+        """Ensure the target MCP server is configured in Gemini CLI.
 
         Checks if server exists, adds it if missing.
 
@@ -91,21 +121,57 @@ class GeminiSolver(BaseSolver):
                 stderr=asyncio.subprocess.PIPE,
                 env=env,
             )
-            stdout_bytes, _ = await proc.communicate()
+            stdout_bytes, stderr_bytes = await proc.communicate()
             stdout = (stdout_bytes or b"").decode(errors="ignore")
+            stderr = (stderr_bytes or b"").decode(errors="ignore")
+            mcp_text = f"{stdout}\n{stderr}"
 
-            # If gamedevbench-mcp is in the list, it's already configured
-            if "gamedevbench-mcp" in stdout:
+            # If threejs stdio bridge is present, reuse it.
+            if (
+                "threejs" in mcp_text
+                and "stdio" in mcp_text
+                and "mcp_http_stdio_bridge.py" in mcp_text
+            ):
                 if self.debug:
-                    print("MCP server gamedevbench-mcp is already configured")
+                    print("MCP server threejs stdio bridge is already configured")
                 return True
 
-            # Server not found, add it
+            # Reconfigure threejs MCP server as stdio bridge.
             if self.debug:
-                print("Adding MCP server gamedevbench-mcp...")
+                print("Configuring MCP server threejs as stdio bridge (to http://127.0.0.1:6601/mcp)...")
+
+            project_root = Path(__file__).resolve().parents[2]
+            bridge_script = project_root / "gamedevbench" / "src" / "mcp_http_stdio_bridge.py"
+
+            # Best-effort cleanup of any stale threejs config from previous attempts.
+            rm_proc = await asyncio.create_subprocess_exec(
+                self.cli_bin,
+                "mcp",
+                "remove",
+                "threejs",
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE,
+                env=env,
+            )
+            await rm_proc.communicate()
 
             proc = await asyncio.create_subprocess_exec(
-                self.cli_bin, "mcp", "add", "gamedevbench-mcp", "uv", "run", "gamedevbench-mcp",
+                self.cli_bin,
+                "mcp",
+                "add",
+                "--scope",
+                "user",
+                "--timeout",
+                "60000",
+                "threejs",
+                "uv",
+                "run",
+                "--directory",
+                str(project_root),
+                "python",
+                str(bridge_script),
+                "--url",
+                "http://127.0.0.1:6601/mcp",
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE,
                 env=env,
@@ -114,7 +180,7 @@ class GeminiSolver(BaseSolver):
 
             if proc.returncode == 0:
                 if self.debug:
-                    print("MCP server gamedevbench-mcp added successfully")
+                    print("MCP server threejs added successfully")
                 return True
             else:
                 if self.debug:
@@ -125,6 +191,58 @@ class GeminiSolver(BaseSolver):
             if self.debug:
                 print(f"Error configuring MCP server: {e}")
             return False
+
+    @contextmanager
+    def _local_no_proxy_scope(self):
+        """Temporarily disable proxy env vars so local MCP HTTP checks bypass proxies."""
+        proxy_keys = [
+            "HTTPS_PROXY",
+            "https_proxy",
+            "HTTP_PROXY",
+            "http_proxy",
+            "ALL_PROXY",
+            "all_proxy",
+        ]
+        old = {k: os.environ.get(k) for k in proxy_keys + ["NO_PROXY", "no_proxy"]}
+        try:
+            for k in proxy_keys:
+                os.environ.pop(k, None)
+            os.environ["NO_PROXY"] = "127.0.0.1,localhost,::1"
+            os.environ["no_proxy"] = "127.0.0.1,localhost,::1"
+            yield
+        finally:
+            for k, v in old.items():
+                if v is None:
+                    os.environ.pop(k, None)
+                else:
+                    os.environ[k] = v
+
+    async def _probe_threejs_tools(self, url: str = "http://127.0.0.1:6601/mcp") -> tuple[bool, list[str], str]:
+        """Probe external MCP endpoint and return (connected, tool_names, error_msg)."""
+        try:
+            from mcp.client.streamable_http import streamablehttp_client
+            from mcp.client.session import ClientSession
+        except Exception as e:
+            return False, [], f"mcp client import failed: {e}"
+
+        try:
+            with self._local_no_proxy_scope():
+                async with streamablehttp_client(url=url) as streams:
+                    try:
+                        read, write, _ = streams
+                    except Exception:
+                        read, write = streams
+                    async with ClientSession(
+                        read,
+                        write,
+                        read_timeout_seconds=timedelta(seconds=15),
+                    ) as session:
+                        await session.initialize()
+                        tools = await session.list_tools()
+                        names = [t.name for t in tools.tools]
+                        return True, names, ""
+        except Exception as e:
+            return False, [], str(e)
 
     async def solve_task_async(self) -> SolverResult:
         """Solve the task in the current directory using Gemini CLI."""
@@ -139,18 +257,34 @@ class GeminiSolver(BaseSolver):
         start_time = time.time()
         prompt = self.get_task_prompt(config)
 
+        # Ensure MCP server is configured if requested
+        if self.use_mcp:
+            mcp_configured = await self._ensure_mcp_server_configured()
+            if not mcp_configured and self.debug:
+                print("Warning: Could not configure MCP server. Continuing without external MCP tools.")
+            # Debug probe + prompt augmentation with discovered tool inventory.
+            connected, tool_names, probe_err = await self._probe_threejs_tools()
+            if self.debug:
+                if connected:
+                    print(f"MCP probe success: threejs reachable, tools={len(tool_names)}")
+                    print("MCP tools: " + ", ".join(tool_names))
+                else:
+                    print(f"MCP probe failed: {probe_err}")
+            if connected and tool_names:
+                prompt += (
+                    "\n\nExternal MCP context:\n"
+                    "Detected external MCP tools: " + ", ".join(tool_names) + "\n"
+                    "Prefer these MCP tools as the first option when they map to requested operations "
+                    "(especially script/asset/canvas changes or validation). "
+                    "If an MCP call fails or is clearly not applicable, fall back to generic file/shell tools."
+                )
+
         if self.debug:
             print("=" * 60)
             print("SENDING PROMPT TO GEMINI CLI:")
             print("=" * 60)
             print(prompt)
             print("=" * 60)
-
-        # Ensure MCP server is configured if requested
-        if self.use_mcp:
-            mcp_configured = await self._ensure_mcp_server_configured()
-            if not mcp_configured and self.debug:
-                print("Warning: Could not configure MCP server. Continuing without screenshot capability.")
 
         try:
             # Build gemini command

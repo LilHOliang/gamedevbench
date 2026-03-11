@@ -272,6 +272,7 @@ tools/
 # gemini
 seeles-test-service-account.json
 .env.example
+.gemini/
 
 # software-agent-sdk
 software-agent-sdk
