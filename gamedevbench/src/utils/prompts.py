@@ -66,19 +66,20 @@ MCP usage rules:
 - At the beginning, discover available MCP tools first.
 - Only call MCP tools that are actually listed as available.
 - Never invent tool names (for example: `screenshot_game`).
-- Prefer MCP tools when they can directly accomplish the requested change or verification.
-- If both MCP and generic file/shell operations are possible, prioritize MCP first, then fall back to generic tools if needed.
+- Use MCP tools when they improve certainty or reduce manual work, but do not optimize for MCP call count.
+- Local task workspace deliverables are authoritative for completion; MCP state alone is not sufficient.
 - Choose tools based on task relevance, expected information gain, and execution reliability.
 
 When to use MCP tools:
 - Before starting work: collect task-relevant context if MCP tools can provide it.
 - During implementation: use MCP tools when they reduce uncertainty or avoid assumptions.
-- After making changes: use MCP and/or Godot runtime checks for objective verification.
-- For script/asset/canvas operations: prefer MCP tools as the primary path, and use direct file edits as fallback.
+- If you modify files via MCP, verify the same target paths in the local workspace before claiming completion.
+- After making changes: use local file checks and/or Godot runtime checks for objective verification.
 
 Important:
 - The game directory is the current directory (`./`) unless a tool explicitly requires another path
 - If an MCP call fails, try another relevant MCP tool before switching to pure file editing.
+- Do not mark the task complete until all required files and key properties from the instruction are confirmed in local workspace files.
 """
         instruction += mcp_guidance
 

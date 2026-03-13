@@ -274,9 +274,9 @@ class GeminiSolver(BaseSolver):
                 prompt += (
                     "\n\nExternal MCP context:\n"
                     "Detected external MCP tools: " + ", ".join(tool_names) + "\n"
-                    "Prefer these MCP tools as the first option when they map to requested operations "
-                    "(especially script/asset/canvas changes or validation). "
-                    "If an MCP call fails or is clearly not applicable, fall back to generic file/shell tools."
+                    "Use these MCP tools when they improve task certainty or execution reliability. "
+                    "For required deliverables, treat local workspace files as the source of truth and verify them before completion. "
+                    "If an MCP call fails or is clearly not applicable, fall back to generic local file/shell operations."
                 )
 
         if self.debug:
