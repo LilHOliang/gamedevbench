@@ -35,9 +35,10 @@ def _force_local_no_proxy() -> None:
 
 
 class HttpToStdioBridge:
-    def __init__(self, remote_url: str, timeout_seconds: int):
+    def __init__(self, remote_url: str, timeout_seconds: int, exclude_tools: set[str] | None = None):
         self.remote_url = remote_url
         self.timeout_seconds = timeout_seconds
+        self.exclude_tools = exclude_tools or set()
         self.server = Server("threejs-http-stdio-bridge")
         self._register_handlers()
 
@@ -76,7 +77,9 @@ class HttpToStdioBridge:
             client_cm, session = await self._with_remote_session()
             try:
                 result: ListToolsResult = await session.list_tools()
-                return result.tools
+                if not self.exclude_tools:
+                    return result.tools
+                return [t for t in result.tools if t.name not in self.exclude_tools]
             finally:
                 await self._close_remote_session(client_cm, session)
 
@@ -110,13 +113,23 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Bridge MCP streamable-http endpoint to stdio.")
     parser.add_argument("--url", default=DEFAULT_REMOTE_URL, help="Remote MCP streamable-http endpoint URL")
     parser.add_argument("--timeout", type=int, default=DEFAULT_TIMEOUT_SECONDS, help="Remote MCP read timeout (seconds)")
+    parser.add_argument(
+        "--exclude-tools",
+        default="",
+        help="Comma-separated tool names to hide from list_tools (for example: read_console,publish_game_version)",
+    )
     return parser.parse_args()
 
 
 def main() -> None:
     _force_local_no_proxy()
     args = parse_args()
-    bridge = HttpToStdioBridge(remote_url=args.url, timeout_seconds=args.timeout)
+    exclude_tools = {x.strip() for x in (args.exclude_tools or "").split(",") if x.strip()}
+    bridge = HttpToStdioBridge(
+        remote_url=args.url,
+        timeout_seconds=args.timeout,
+        exclude_tools=exclude_tools,
+    )
     asyncio.run(bridge.run())
 
 
