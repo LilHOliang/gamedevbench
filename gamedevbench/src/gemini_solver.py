@@ -15,6 +15,7 @@ from typing import Optional
 
 from gamedevbench.src.base_solver import BaseSolver
 from gamedevbench.src.utils.data_types import SolverResult, TokenUsage
+from gamedevbench.src.utils.prompts import create_system_prompt, create_task_prompt
 
 
 class GeminiSolver(BaseSolver):
@@ -23,6 +24,7 @@ class GeminiSolver(BaseSolver):
     # Solver capabilities (required by BaseSolver)
     SUPPORTS_MCP = True
     SUPPORTS_SYSTEM_PROMPT = False
+    MCP_SERVER_ALIAS = os.environ.get("GAMEDEVBENCH_MCP_SERVER_ALIAS", "threejs")
 
     def __init__(
         self,
@@ -113,6 +115,13 @@ class GeminiSolver(BaseSolver):
         """
         env = self._build_subprocess_env()
 
+        # Tools we want hidden from MCP discovery by default.
+        # Override with env var, e.g. GAMEDEVBENCH_MCP_EXCLUDE_TOOLS="read_console,publish_game_version".
+        excluded_tools = os.environ.get(
+            "GAMEDEVBENCH_MCP_EXCLUDE_TOOLS",
+            "read_console,publish_game_version",
+        )
+
         # Check if server is already configured by listing MCP servers
         try:
             proc = await asyncio.create_subprocess_exec(
@@ -126,29 +135,34 @@ class GeminiSolver(BaseSolver):
             stderr = (stderr_bytes or b"").decode(errors="ignore")
             mcp_text = f"{stdout}\n{stderr}"
 
-            # If threejs stdio bridge is present, reuse it.
+            # If the stdio bridge is present with expected exclude flag, reuse it.
             if (
-                "threejs" in mcp_text
+                self.MCP_SERVER_ALIAS in mcp_text
                 and "stdio" in mcp_text
                 and "mcp_http_stdio_bridge.py" in mcp_text
+                and "--exclude-tools" in mcp_text
+                and excluded_tools in mcp_text
             ):
                 if self.debug:
-                    print("MCP server threejs stdio bridge is already configured")
+                    print(f"MCP server {self.MCP_SERVER_ALIAS} stdio bridge is already configured")
                 return True
 
-            # Reconfigure threejs MCP server as stdio bridge.
+            # Reconfigure the MCP server as stdio bridge.
             if self.debug:
-                print("Configuring MCP server threejs as stdio bridge (to http://127.0.0.1:6601/mcp)...")
+                print(
+                    f"Configuring MCP server {self.MCP_SERVER_ALIAS} as stdio bridge "
+                    "(to http://127.0.0.1:6601/mcp)..."
+                )
 
             project_root = Path(__file__).resolve().parents[2]
             bridge_script = project_root / "gamedevbench" / "src" / "mcp_http_stdio_bridge.py"
 
-            # Best-effort cleanup of any stale threejs config from previous attempts.
+            # Best-effort cleanup of any stale config from previous attempts.
             rm_proc = await asyncio.create_subprocess_exec(
                 self.cli_bin,
                 "mcp",
                 "remove",
-                "threejs",
+                self.MCP_SERVER_ALIAS,
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE,
                 env=env,
@@ -163,7 +177,7 @@ class GeminiSolver(BaseSolver):
                 "user",
                 "--timeout",
                 "60000",
-                "threejs",
+                self.MCP_SERVER_ALIAS,
                 "uv",
                 "run",
                 "--directory",
@@ -172,6 +186,8 @@ class GeminiSolver(BaseSolver):
                 str(bridge_script),
                 "--url",
                 "http://127.0.0.1:6601/mcp",
+                "--exclude-tools",
+                excluded_tools,
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE,
                 env=env,
@@ -180,7 +196,7 @@ class GeminiSolver(BaseSolver):
 
             if proc.returncode == 0:
                 if self.debug:
-                    print("MCP server threejs added successfully")
+                    print(f"MCP server {self.MCP_SERVER_ALIAS} added successfully")
                 return True
             else:
                 if self.debug:
@@ -244,6 +260,11 @@ class GeminiSolver(BaseSolver):
         except Exception as e:
             return False, [], str(e)
 
+    def _runtime_mcp_tool_names(self, raw_tool_names: list[str]) -> list[str]:
+        """Return the Gemini runtime-visible MCP tool names for the configured server alias."""
+        prefix = f"mcp_{self.MCP_SERVER_ALIAS}_"
+        return [f"{prefix}{name}" for name in raw_tool_names]
+
     async def solve_task_async(self) -> SolverResult:
         """Solve the task in the current directory using Gemini CLI."""
         config = self.load_config()
@@ -255,7 +276,28 @@ class GeminiSolver(BaseSolver):
             )
 
         start_time = time.time()
-        prompt = self.get_task_prompt(config)
+        task_prompt = create_task_prompt(
+            config,
+            use_runtime_video=self.use_runtime_video,
+            use_mcp=self.use_mcp,
+            include_edit_flow=False,
+        )
+        # Historical behavior kept for reference:
+        # Gemini CLI previously received a pseudo system prompt via the main user prompt.
+        # Now that GEMINI.md is confirmed to flow into Gemini's actual system context,
+        # repeating those instructions here is redundant and makes the task prompt noisy.
+        #
+        # pseudo_system_prompt = create_system_prompt(self.use_mcp)
+        # prompt = (
+        #     "Follow the following system-level instructions with high priority.\n\n"
+        #     "<system_instructions>\n"
+        #     f"{pseudo_system_prompt}\n"
+        #     "</system_instructions>\n\n"
+        #     "<task>\n"
+        #     f"{task_prompt}\n"
+        #     "</task>"
+        # )
+        prompt = task_prompt
 
         # Ensure MCP server is configured if requested
         if self.use_mcp:
@@ -266,14 +308,21 @@ class GeminiSolver(BaseSolver):
             connected, tool_names, probe_err = await self._probe_threejs_tools()
             if self.debug:
                 if connected:
-                    print(f"MCP probe success: threejs reachable, tools={len(tool_names)}")
-                    print("MCP tools: " + ", ".join(tool_names))
+                    runtime_tool_names = self._runtime_mcp_tool_names(tool_names)
+                    print(
+                        f"MCP probe success: {self.MCP_SERVER_ALIAS} reachable, "
+                        f"tools={len(tool_names)}"
+                    )
+                    print("MCP raw tools: " + ", ".join(tool_names))
+                    print("MCP runtime tools: " + ", ".join(runtime_tool_names))
                 else:
                     print(f"MCP probe failed: {probe_err}")
             if connected and tool_names:
+                runtime_tool_names = self._runtime_mcp_tool_names(tool_names)
                 prompt += (
                     "\n\nExternal MCP context:\n"
-                    "Detected external MCP tools: " + ", ".join(tool_names) + "\n"
+                    "Runtime MCP tool names for this run: " + ", ".join(runtime_tool_names) + "\n"
+                    "Call MCP tools only by the exact runtime names listed above. "
                     "Use these MCP tools when they improve task certainty or execution reliability. "
                     "For required deliverables, treat local workspace files as the source of truth and verify them before completion. "
                     "If an MCP call fails or is clearly not applicable, fall back to generic local file/shell operations."

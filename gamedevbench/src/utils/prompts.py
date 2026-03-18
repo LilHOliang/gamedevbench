@@ -9,6 +9,64 @@ ensuring consistency across different agents.
 import json
 from typing import Optional
 
+EDIT_FLOW_GUIDANCE_LOCAL = """
+
+<edit_flow>
+Code modifications must follow this workflow:
+
+1. Extract key entities from the task/context:
+   - function name, component/node name, error message, variable/resource name, file hint.
+2. Infer the likely scope (modules/files) from those entities.
+3. Search before editing:
+   - Prefer: `rg "keywords"` (or `grep "keywords"` if rg is unavailable).
+   - Goal: find relevant file paths and line locations.
+4. Read only the relevant files/sections to understand current logic and data format.
+5. If new keywords/references appear while reading:
+   - Return to Step 3 and continue search-read iterations.
+
+Termination conditions (all required):
+- You clearly know which files must be modified.
+- You clearly know the exact locations to modify.
+- You have checked whether the change may affect other modules/files.
+
+Prohibited behaviors:
+- Do not guess paths and edit directly without search + read.
+- Do not read many unrelated files at once.
+- Do not start write/replace/modify operations before the target location is confirmed.
+</edit_flow>
+"""
+
+EDIT_FLOW_GUIDANCE_MCP_PREFERRED = """
+
+<edit_flow>
+Code modifications should follow this workflow:
+
+1. Extract key entities from the task/context:
+   - function name, component/node name, error message, variable/resource name, file hint.
+2. Infer the likely scope (modules/files) from those entities.
+3. Choose search strategy before editing:
+   - If target file/path is unclear, use available MCP search tools or local `rg/grep` to locate candidates first.
+   - If target file/path is already explicit in the task, you may read that file directly first, then run additional search only when needed.
+4. Read only the relevant files/sections to understand current logic and data format:
+   - Choose the most suitable available read tool based on current task context.
+5. If new keywords/references appear while reading:
+   - Return to Step 3 and continue search-read iterations.
+6. Perform edits:
+   - Use MCP edit tools only by their exact runtime-exposed names when they improve reliability for the current task context.
+   - Use local editing tools when local verification/execution is required or MCP state is not authoritative.
+
+Termination conditions (all required):
+- You clearly know which files must be modified.
+- You clearly know the exact locations to modify.
+- You have checked whether the change may affect other modules/files.
+
+Prohibited behaviors:
+- Do not guess paths and edit directly without search + read.
+- Do not read many unrelated files at once.
+- Do not start write/replace/modify operations before the target location is confirmed.
+</edit_flow>
+"""
+
 
 def load_task_config() -> Optional[dict]:
     """Load task configuration from task_config.json in current directory.
@@ -24,13 +82,19 @@ def load_task_config() -> Optional[dict]:
         return None
 
 
-def create_task_prompt(config: dict, use_runtime_video: bool = False, use_mcp: bool = False) -> str:
+def create_task_prompt(
+    config: dict,
+    use_runtime_video: bool = False,
+    use_mcp: bool = False,
+    include_edit_flow: bool = True,
+) -> str:
     """Create minimal task prompt with just the instruction.
 
     Args:
         config: Task configuration dict containing 'instruction' field
         use_runtime_video: Whether to append Godot runtime video instructions
         use_mcp: Whether to include MCP tool references
+        include_edit_flow: Whether to append edit-flow guidance block
 
     Returns:
         The instruction text with optional runtime video and MCP guidance
@@ -83,6 +147,9 @@ Important:
 """
         instruction += mcp_guidance
 
+    if include_edit_flow:
+        instruction += EDIT_FLOW_GUIDANCE_MCP_PREFERRED if use_mcp else EDIT_FLOW_GUIDANCE_LOCAL
+
     return instruction
 
 
@@ -95,4 +162,5 @@ def create_system_prompt(use_mcp: bool = False) -> str:
     Returns:
         System prompt string
     """
-    return "You are a Godot game development expert."
+    guidance = EDIT_FLOW_GUIDANCE_MCP_PREFERRED if use_mcp else EDIT_FLOW_GUIDANCE_LOCAL
+    return "You are a Godot game development expert.\n" + guidance

@@ -281,10 +281,11 @@ software-agent-sdk
 my_summary
 
 # game_mcp_server
-game_mcp_server
-/home/seele003/TTS/gamedevbench-bp/.vscode
+game_mcp_server/
+game_mcp_server-old/
+gamedevbench-bp/.vscode
 
 # /home/seele003/TTS/gamedevbench-bp/my_test_files
 my_test_files/
 
-/home/seele003/TTS/gamedevbench-bp/godot
+gamedevbench-bp/godot
