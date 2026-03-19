@@ -9,6 +9,7 @@ proxy-related issues on local HTTP MCP endpoints.
 import argparse
 import asyncio
 import os
+import sys
 from datetime import timedelta
 from typing import Any
 
@@ -39,11 +40,35 @@ class HttpToStdioBridge:
         self.remote_url = remote_url
         self.timeout_seconds = timeout_seconds
         self.exclude_tools = exclude_tools or set()
+        self.forward_headers = self._build_forward_headers()
+        print(
+            f"[bridge] remote_url={self.remote_url} forward_headers={self.forward_headers}",
+            file=sys.stderr,
+            flush=True,
+        )
         self.server = Server("game-http-stdio-bridge")
         self._register_handlers()
 
+    @staticmethod
+    def _build_forward_headers() -> dict[str, str] | None:
+        headers: dict[str, str] = {}
+        canvas_id = os.environ.get("GAMEDEVBENCH_RUN_CANVAS_ID", "").strip()
+        trace_id = os.environ.get("GAMEDEVBENCH_RUN_TRACE_ID", "").strip()
+
+        if canvas_id:
+            headers["x-canvas-id"] = canvas_id
+        if trace_id:
+            headers["x-seele-canvas-trace-id"] = trace_id
+
+        return headers or None
+
     async def _with_remote_session(self) -> Any:
-        client_cm = streamablehttp_client(url=self.remote_url)
+        print(
+            f"[bridge] opening remote session with headers={self.forward_headers}",
+            file=sys.stderr,
+            flush=True,
+        )
+        client_cm = streamablehttp_client(url=self.remote_url, headers=self.forward_headers)
         streams = await client_cm.__aenter__()
         try:
             try:

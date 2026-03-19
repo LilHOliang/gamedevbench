@@ -8,10 +8,14 @@ import shutil
 import csv
 import yaml
 import tempfile
+import sys
 import uuid
+from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, Iterable, List, Optional, Tuple
+
+import boto3
 
 from gamedevbench.src.utils.constants import (
     TASKS_DIR,
@@ -626,6 +630,117 @@ script = ExtResource("test_script")
             scenes_dst.mkdir(parents=True, exist_ok=True)
             shutil.copy2(test_tscn_src, scenes_dst / "test.tscn")
 
+    def _generate_run_canvas_context(self, task_name: str) -> Tuple[str, str]:
+        """Create a unique canvas/trace context for one benchmark run."""
+        canvas_id = str(uuid.uuid4())
+        turn_id = str(uuid.uuid4())
+        task_slug = "".join(ch if ch.isalnum() or ch in ("-", "_") else "_" for ch in task_name)
+        trace_id = f"{canvas_id}|{turn_id}|benchmark_{task_slug}|sandbox_sync"
+        return canvas_id, trace_id
+
+    def _iter_canvas_sync_files(self, sandbox_dir: Path) -> Iterable[Tuple[Path, str]]:
+        """Yield sandbox files that should be mirrored to the remote MCP canvas."""
+        for path in sorted(sandbox_dir.rglob("*")):
+            if not path.is_file():
+                continue
+
+            rel_path = path.relative_to(sandbox_dir)
+            rel_str = rel_path.as_posix()
+
+            if rel_str == "agent_trajectory.log":
+                continue
+            if rel_str == "-":
+                continue
+
+            # Keep the remote canvas focused on project files, not local runtime metadata.
+            if any(part.startswith(".") for part in rel_path.parts):
+                continue
+
+            yield path, rel_str
+
+    @contextmanager
+    def _game_mcp_server_import_path(self):
+        """Temporarily expose the lightweight game_mcp_server config module."""
+        project_root = Path(__file__).resolve().parents[2]
+        import_root = str(project_root / "game_mcp_server")
+        inserted = False
+        try:
+            if import_root not in sys.path:
+                sys.path.insert(0, import_root)
+                inserted = True
+            yield
+        finally:
+            if inserted and import_root in sys.path:
+                sys.path.remove(import_root)
+
+    def _build_canvas_s3_client(self):
+        """Create a lightweight boto3 S3 client using game_mcp_server config only."""
+        with self._game_mcp_server_import_path():
+            from config import config
+
+        return boto3.client(
+            "s3",
+            aws_access_key_id=config.s3.private_access_key_id,
+            aws_secret_access_key=config.s3.private_secret_key,
+            region_name=config.s3.private_region,
+        ), config.s3.private_bucket, config.threejs.script_base_prefix.rstrip("/")
+
+    def _sync_sandbox_to_canvas(self, sandbox_dir: Path, canvas_id: str) -> None:
+        """Mirror the sandbox content into the run-scoped remote canvas."""
+        files_to_upload = list(self._iter_canvas_sync_files(sandbox_dir))
+        s3_client, bucket_name, base_prefix = self._build_canvas_s3_client()
+        canvas_prefix = f"{base_prefix}/{canvas_id}/"
+
+        paginator = s3_client.get_paginator("list_objects_v2")
+        delete_batch: List[Dict[str, str]] = []
+        for page in paginator.paginate(Bucket=bucket_name, Prefix=canvas_prefix):
+            for obj in page.get("Contents", []):
+                delete_batch.append({"Key": obj["Key"]})
+                if len(delete_batch) == 1000:
+                    s3_client.delete_objects(Bucket=bucket_name, Delete={"Objects": delete_batch})
+                    delete_batch.clear()
+        if delete_batch:
+            s3_client.delete_objects(Bucket=bucket_name, Delete={"Objects": delete_batch})
+
+        for abs_path, rel_path in files_to_upload:
+            s3_key = f"{canvas_prefix}{rel_path}"
+            content_type = "text/plain"
+            lower_path = rel_path.lower()
+            if lower_path.endswith(".gd"):
+                content_type = "text/x-python"
+            elif lower_path.endswith(".json"):
+                content_type = "application/json"
+            elif lower_path.endswith(".tscn") or lower_path.endswith(".tres") or lower_path.endswith(".res"):
+                content_type = "text/plain"
+
+            s3_client.upload_file(
+                str(abs_path),
+                bucket_name,
+                s3_key,
+                ExtraArgs={"ContentType": content_type},
+            )
+
+        if self.debug:
+            print(f"      Synced {len(files_to_upload)} sandbox files to MCP canvas {canvas_id}")
+
+    @contextmanager
+    def _solver_mcp_context(self, canvas_id: str, trace_id: str):
+        """Expose run-scoped MCP context to the solver subprocess chain."""
+        overrides = {
+            "GAMEDEVBENCH_RUN_CANVAS_ID": canvas_id,
+            "GAMEDEVBENCH_RUN_TRACE_ID": trace_id,
+        }
+        previous = {key: os.environ.get(key) for key in overrides}
+        try:
+            os.environ.update(overrides)
+            yield
+        finally:
+            for key, old_value in previous.items():
+                if old_value is None:
+                    os.environ.pop(key, None)
+                else:
+                    os.environ[key] = old_value
+
     def _validate_in_directory(
         self, validation_dir: Path, task_name: str
     ) -> "ValidationResult":
@@ -836,29 +951,67 @@ script = ExtResource("test_script")
                 if self.debug:
                     print("      Assets loaded and imported")
 
+            run_canvas_id = ""
+            run_trace_id = ""
+            if self.use_mcp:
+                run_canvas_id, run_trace_id = self._generate_run_canvas_context(task_name)
+                if self.debug:
+                    print(f"[1.75/5] Syncing sandbox to MCP canvas...")
+                    print(f"      Canvas ID: {run_canvas_id}")
+                try:
+                    self._sync_sandbox_to_canvas(sandbox_dir, run_canvas_id)
+                except Exception as e:
+                    return {
+                        "task_name": task_name,
+                        "success": False,
+                        "message": f"Failed to sync sandbox to MCP canvas: {e}",
+                        "timestamp": datetime.now().isoformat(),
+                        "agent": self.agent,
+                        "model": display_model,
+                        "use_mcp": self.use_mcp,
+                        "use_runtime_video": self.use_runtime_video,
+                        "skip_display": self.skip_display,
+                        "debug": self.debug,
+                        "solver_success": False,
+                        "solver_message": "solver not started because canvas sync failed",
+                        "solver_duration": 0.0,
+                        "is_rate_limited": False,
+                        "input_tokens": 0,
+                        "output_tokens": 0,
+                        "total_tokens": 0,
+                        "cost_usd": 0.0,
+                        "sandbox_dir": str(sandbox_dir),
+                        "run_canvas_id": run_canvas_id,
+                        "run_trace_id": run_trace_id,
+                        "result_dir": "",
+                    }
+
             # Step 2: Run agent in sandbox
             original_cwd = os.getcwd()
             solver_result = None
             log_file_path = sandbox_dir / "agent_trajectory.log"
 
             try:
-                os.chdir(sandbox_dir)
-                if self.debug:
-                    print(
-                        f"[2/5] Solving task with {self.agent} (model: {display_model}): {task_name}"
-                    )
-                    print(f"      Working directory: {sandbox_dir}")
+                with self._solver_mcp_context(run_canvas_id, run_trace_id):
+                    os.chdir(sandbox_dir)
+                    if self.debug:
+                        print(
+                            f"[2/5] Solving task with {self.agent} (model: {display_model}): {task_name}"
+                        )
+                        print(f"      Working directory: {sandbox_dir}")
+                        if self.use_mcp:
+                            print(f"      MCP canvas context: {run_canvas_id}")
 
-                # Create solver using factory pattern
-                solver = SolverFactory.create_solver(
-                    agent=self.agent,
-                    debug=self.debug,
-                    model=self.model,
-                    use_mcp=self.use_mcp,
-                    timeout_seconds=TIMEOUT,
-                    use_runtime_video=self.use_runtime_video,
-                )
-                solver_result = solver.solve_task()
+                    # Create solver using factory pattern
+                    solver = SolverFactory.create_solver(
+                        agent=self.agent,
+                        debug=self.debug,
+                        model=self.model,
+                        use_mcp=self.use_mcp,
+                        timeout_seconds=TIMEOUT,
+                        use_runtime_video=self.use_runtime_video,
+                    )
+                    solver_result = solver.solve_task()
 
                 # Save solver output to log file
                 with open(log_file_path, "w") as f:
@@ -872,6 +1025,9 @@ script = ExtResource("test_script")
                         f.write(f"Success: {solver_result.success}\n")
                         f.write(f"Message: {solver_result.message}\n")
                         f.write(f"Duration: {solver_result.duration_seconds:.2f}s\n\n")
+                        if run_canvas_id:
+                            f.write(f"Run Canvas ID: {run_canvas_id}\n")
+                            f.write(f"Run Trace ID: {run_trace_id}\n\n")
                         f.write("STDOUT:\n")
                         f.write(solver_result.stdout or "")
                         f.write("\n\nSTDERR:\n")
@@ -968,6 +1124,8 @@ script = ExtResource("test_script")
                 "total_tokens": total_tokens,
                 "cost_usd": cost_usd,
                 "sandbox_dir": str(sandbox_dir) if sandbox_dir else "",
+                "run_canvas_id": run_canvas_id,
+                "run_trace_id": run_trace_id,
                 "result_dir": str(result_subdir.relative_to(self.tasks_dir.parent)),
             }
 

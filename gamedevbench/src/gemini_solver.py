@@ -115,6 +115,8 @@ class GeminiSolver(BaseSolver):
             True if server is configured, False otherwise
         """
         env = self._build_subprocess_env()
+        run_canvas_id = env.get("GAMEDEVBENCH_RUN_CANVAS_ID", "").strip()
+        run_trace_id = env.get("GAMEDEVBENCH_RUN_TRACE_ID", "").strip()
 
         # Tools we want hidden from MCP discovery by default.
         # Override with env var, e.g. GAMEDEVBENCH_MCP_EXCLUDE_TOOLS="read_console,publish_game_version".
@@ -140,6 +142,13 @@ class GeminiSolver(BaseSolver):
                 alias for alias in self.LEGACY_MCP_SERVER_ALIASES
                 if alias != self.MCP_SERVER_ALIAS and alias in mcp_text
             ]
+            expected_env_tokens = []
+            if run_canvas_id:
+                expected_env_tokens.append(f"GAMEDEVBENCH_RUN_CANVAS_ID={run_canvas_id}")
+            if run_trace_id:
+                expected_env_tokens.append(f"GAMEDEVBENCH_RUN_TRACE_ID={run_trace_id}")
+            env_matches = all(token in mcp_text for token in expected_env_tokens)
+            requires_run_scoped_reconfigure = bool(run_canvas_id)
 
             # If the stdio bridge is present with expected exclude flag, reuse it only
             # when no stale legacy aliases remain configured in Gemini CLI home.
@@ -149,7 +158,9 @@ class GeminiSolver(BaseSolver):
                 and "mcp_http_stdio_bridge.py" in mcp_text
                 and "--exclude-tools" in mcp_text
                 and excluded_tools in mcp_text
+                and env_matches
                 and not stale_aliases
+                and not requires_run_scoped_reconfigure
             ):
                 if self.debug:
                     print(f"MCP server {self.MCP_SERVER_ALIAS} stdio bridge is already configured")
@@ -198,6 +209,16 @@ class GeminiSolver(BaseSolver):
                 "http://127.0.0.1:6601/mcp",
                 "--exclude-tools",
                 excluded_tools,
+                *(
+                    ["--env", f"GAMEDEVBENCH_RUN_CANVAS_ID={run_canvas_id}"]
+                    if run_canvas_id
+                    else []
+                ),
+                *(
+                    ["--env", f"GAMEDEVBENCH_RUN_TRACE_ID={run_trace_id}"]
+                    if run_trace_id
+                    else []
+                ),
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE,
                 env=env,
