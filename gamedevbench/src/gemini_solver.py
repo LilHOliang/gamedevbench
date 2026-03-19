@@ -24,7 +24,8 @@ class GeminiSolver(BaseSolver):
     # Solver capabilities (required by BaseSolver)
     SUPPORTS_MCP = True
     SUPPORTS_SYSTEM_PROMPT = False
-    MCP_SERVER_ALIAS = os.environ.get("GAMEDEVBENCH_MCP_SERVER_ALIAS", "threejs")
+    MCP_SERVER_ALIAS = os.environ.get("GAMEDEVBENCH_MCP_SERVER_ALIAS", "game")
+    LEGACY_MCP_SERVER_ALIASES = ("threejs",)
 
     def __init__(
         self,
@@ -42,7 +43,7 @@ class GeminiSolver(BaseSolver):
             debug: Enable verbose output
             use_yolo: Use --yolo flag to auto-approve all actions
             model: Model name to pass via --model flag (optional)
-            use_mcp: Whether to use MCP tools (ensures threejs MCP server is configured via Gemini CLI)
+            use_mcp: Whether to use MCP tools (ensures the game MCP server is configured via Gemini CLI)
             use_runtime_video: Whether to append Godot runtime video instructions to prompts
         """
         # Call parent constructor (handles MCP validation)
@@ -135,13 +136,20 @@ class GeminiSolver(BaseSolver):
             stderr = (stderr_bytes or b"").decode(errors="ignore")
             mcp_text = f"{stdout}\n{stderr}"
 
-            # If the stdio bridge is present with expected exclude flag, reuse it.
+            stale_aliases = [
+                alias for alias in self.LEGACY_MCP_SERVER_ALIASES
+                if alias != self.MCP_SERVER_ALIAS and alias in mcp_text
+            ]
+
+            # If the stdio bridge is present with expected exclude flag, reuse it only
+            # when no stale legacy aliases remain configured in Gemini CLI home.
             if (
                 self.MCP_SERVER_ALIAS in mcp_text
                 and "stdio" in mcp_text
                 and "mcp_http_stdio_bridge.py" in mcp_text
                 and "--exclude-tools" in mcp_text
                 and excluded_tools in mcp_text
+                and not stale_aliases
             ):
                 if self.debug:
                     print(f"MCP server {self.MCP_SERVER_ALIAS} stdio bridge is already configured")
@@ -157,17 +165,19 @@ class GeminiSolver(BaseSolver):
             project_root = Path(__file__).resolve().parents[2]
             bridge_script = project_root / "gamedevbench" / "src" / "mcp_http_stdio_bridge.py"
 
-            # Best-effort cleanup of any stale config from previous attempts.
-            rm_proc = await asyncio.create_subprocess_exec(
-                self.cli_bin,
-                "mcp",
-                "remove",
-                self.MCP_SERVER_ALIAS,
-                stdout=asyncio.subprocess.PIPE,
-                stderr=asyncio.subprocess.PIPE,
-                env=env,
-            )
-            await rm_proc.communicate()
+            # Best-effort cleanup of the current alias plus legacy aliases from previous runs.
+            aliases_to_remove = [self.MCP_SERVER_ALIAS, *stale_aliases]
+            for alias in aliases_to_remove:
+                rm_proc = await asyncio.create_subprocess_exec(
+                    self.cli_bin,
+                    "mcp",
+                    "remove",
+                    alias,
+                    stdout=asyncio.subprocess.PIPE,
+                    stderr=asyncio.subprocess.PIPE,
+                    env=env,
+                )
+                await rm_proc.communicate()
 
             proc = await asyncio.create_subprocess_exec(
                 self.cli_bin,
@@ -233,7 +243,7 @@ class GeminiSolver(BaseSolver):
                 else:
                     os.environ[k] = v
 
-    async def _probe_threejs_tools(self, url: str = "http://127.0.0.1:6601/mcp") -> tuple[bool, list[str], str]:
+    async def _probe_mcp_tools(self, url: str = "http://127.0.0.1:6601/mcp") -> tuple[bool, list[str], str]:
         """Probe external MCP endpoint and return (connected, tool_names, error_msg)."""
         try:
             from mcp.client.streamable_http import streamablehttp_client
@@ -305,7 +315,7 @@ class GeminiSolver(BaseSolver):
             if not mcp_configured and self.debug:
                 print("Warning: Could not configure MCP server. Continuing without external MCP tools.")
             # Debug probe + prompt augmentation with discovered tool inventory.
-            connected, tool_names, probe_err = await self._probe_threejs_tools()
+            connected, tool_names, probe_err = await self._probe_mcp_tools()
             if self.debug:
                 if connected:
                     runtime_tool_names = self._runtime_mcp_tool_names(tool_names)

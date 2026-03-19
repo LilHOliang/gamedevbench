@@ -39,7 +39,7 @@ class HttpToStdioBridge:
         self.remote_url = remote_url
         self.timeout_seconds = timeout_seconds
         self.exclude_tools = exclude_tools or set()
-        self.server = Server("threejs-http-stdio-bridge")
+        self.server = Server("game-http-stdio-bridge")
         self._register_handlers()
 
     async def _with_remote_session(self) -> Any:
@@ -99,7 +99,7 @@ class HttpToStdioBridge:
                 read_stream,
                 write_stream,
                 InitializationOptions(
-                    server_name="threejs-http-stdio-bridge",
+                    server_name="game-http-stdio-bridge",
                     server_version="0.1.0",
                     capabilities=self.server.get_capabilities(
                         notification_options=NotificationOptions(),

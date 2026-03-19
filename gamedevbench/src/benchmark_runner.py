@@ -551,6 +551,20 @@ script = ExtResource("test_script")
                 if not should_skip_directory(item):
                     copy_directory_filtered(item, sandbox_dir / item.name)
 
+        # If Gemini CLI system prompt support is enabled, mirror the project-local
+        # .gemini/system.md into the sandbox so the CLI can resolve it from cwd.
+        if os.environ.get("GEMINI_SYSTEM_MD") == "1":
+            project_root = Path(__file__).resolve().parents[2]
+            system_md_src = project_root / ".gemini" / "system.md"
+            if system_md_src.exists():
+                gemini_dir = sandbox_dir / ".gemini"
+                gemini_dir.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(system_md_src, gemini_dir / "system.md")
+                if self.debug:
+                    print(f"      Copied Gemini system prompt to: {gemini_dir / 'system.md'}")
+            elif self.debug:
+                print(f"      Warning: GEMINI_SYSTEM_MD=1 but no system prompt found at {system_md_src}")
+
         # Create a minimal task_config.json with only the instruction
         # This gives the agent the task without any hints or test information
         task_config_src = task_dir / "task_config.json"

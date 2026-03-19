@@ -6,14 +6,14 @@
   },
   "mcp": {
     "allowed": [
-      "threejs"
+      "game"
     ],
     "excluded": [
       "gamedevbench-mcp"
     ]
   },
   "mcpServers": {
-    "threejs": {
+    "game": {
       "type": "stdio",
       "command": "uv",
       "args": [
