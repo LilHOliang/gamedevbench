@@ -1,0 +1,3041 @@
+Agent: gemini-cli
+  - MCP Support: True
+  - System Prompt Support: False
+Running validation on 4 tasks...
+Running benchmark for task: task_0022
+[1/5] Creating isolated sandbox environment...
+      Creating sandbox at: /tmp/gamedevbench_sandbox_170580d1
+[1.5/5] Loading sandbox in editor to import assets...
+      Assets loaded and imported
+[2/5] Solving task with gemini-cli (model: gemini-3-flash-preview): task_0022
+      Working directory: /tmp/gamedevbench_sandbox_170580d1
+============================================================
+SENDING PROMPT TO GEMINI CLI:
+============================================================
+Add a Node2D named SpawningPoints under the Trap node. Inside SpawningPoints, create two Marker2D children named SpawnTop and SpawnBot. Place SpawnTop at position (0, 15) and SpawnBot at position (0, -15). Set SpawnBot's z_index to 1.
+ You must complete the full task without any further assistance.
+ Godot is installed and you can run godot using the `godot` command. It is recommended to run this with a timeout (e.g., `timeout 10 godot` for 10 second timeout) to prevent hanging.You are a visual agent and can use images and videos to help you understand the state of the game.
+============================================================
+
+Running: gemini --yolo --model -p "..."
+
+GEMINI TRAJECTORY:
+============================================================
+{"type":"init","timestamp":"2026-03-20T03:52:26.553Z","session_id":"72bfcd2c-c7cc-4ecd-a380-feab367b7c7f","model":"gemini-3-flash-preview"}
+{"type":"message","timestamp":"2026-03-20T03:52:26.554Z","role":"user","content":"Add a Node2D named SpawningPoints under the Trap node. Inside SpawningPoints, create two Marker2D children named SpawnTop and SpawnBot. Place SpawnTop at position (0, 15) and SpawnBot at position (0, -15). Set SpawnBot's z_index to 1.\n You must complete the full task without any further assistance.\n Godot is installed and you can run godot using the `godot` command. It is recommended to run this with a timeout (e.g., `timeout 10 godot` for 10 second timeout) to prevent hanging.You are a visual agent and can use images and videos to help you understand the state of the game."}
+{"type":"message","timestamp":"2026-03-20T03:52:47.631Z","role":"assistant","content":"I will start by reading the contents of `scenes/main.tscn` to understand its current structure and locate the `Trap` node.","delta":true}
+{"type":"tool_use","timestamp":"2026-03-20T03:52:47.688Z","tool_name":"read_file","tool_id":"read_file_1773978767688_0","parameters":{"file_path":"scenes/main.tscn"}}
+{"type":"tool_result","timestamp":"2026-03-20T03:52:47.714Z","tool_id":"read_file_1773978767688_0","status":"success","output":""}
+{"type":"message","timestamp":"2026-03-20T03:53:09.217Z","role":"assistant","content":"I will update `scenes/main.tscn` to include the `SpawningPoints` Node2D and its `Marker2D` children at the specified positions and z-index.","delta":true}
+{"type":"tool_use","timestamp":"2026-03-20T03:53:09.414Z","tool_name":"replace","tool_id":"replace_1773978789414_0","parameters":{"new_string":"[node name=\"Sprite2D\" type=\"Sprite2D\" parent=\"Trap\"]\ntexture = ExtResource(\"2_igidl\")\n\n[node name=\"SpawningPoints\" type=\"Node2D\" parent=\"Trap\"]\n\n[node name=\"SpawnTop\" type=\"Marker2D\" parent=\"Trap/SpawningPoints\"]\nposition = Vector2(0, 15)\n\n[node name=\"SpawnBot\" type=\"Marker2D\" parent=\"Trap/SpawningPoints\"]\nz_index = 1\nposition = Vector2(0, -15)\n","old_string":"[node name=\"Sprite2D\" type=\"Sprite2D\" parent=\"Trap\"]\ntexture = ExtResource(\"2_igidl\")\n","file_path":"scenes/main.tscn","instruction":"Add a Node2D named SpawningPoints under the Trap node, with two Marker2D children named SpawnTop and SpawnBot at their specified positions and z_index."}}
+{"type":"tool_result","timestamp":"2026-03-20T03:53:09.429Z","tool_id":"replace_1773978789414_0","status":"success"}
+{"type":"message","timestamp":"2026-03-20T03:53:25.401Z","role":"assistant","content":"I will run Godot in headless mode briefly to confirm that the updated `scenes/main.tscn` loads correctly and without errors.","delta":true}
+{"type":"tool_use","timestamp":"2026-03-20T03:53:25.453Z","tool_name":"run_shell_command","tool_id":"run_shell_command_1773978805453_0","parameters":{"command":"timeout 5 godot --headless --editor --quit-after 5 scenes/main.tscn","description":"Validate the scene file loads correctly in Godot."}}
+{"type":"tool_result","timestamp":"2026-03-20T03:53:28.495Z","tool_id":"run_shell_command_1773978805453_0","status":"success","output":"Godot Engine v4.6.1.stable.official.14d19694e - https://godotengine.org\n\n[   0% ] first_scan_filesystem | Started Project initialization (5 steps)\n[   0% ] first_scan_filesystem | Scanning file structure...\n[  16% ] first_scan_filesystem | Loading global class names...\n[  33% ] first_scan_filesystem | Verifying GDExtensions...\n[  50% ] first_scan_filesystem | Creating autoload scripts...\n[  66% ] first_scan_filesystem | Initializing plugins...\n[  83% ] first_scan_filesystem | Starting file scan...\n[ DONE ] first_scan_filesystem\n\nWARNING: Scan thread aborted...\n     at: _notification (editor/file_system/editor_file_system.cpp:1729)"}
+{"type":"message","timestamp":"2026-03-20T03:53:35.545Z","role":"assistant","content":"I have added the `SpawningPoints` Node2D as a child of `Trap`, and its two `Marker2D` children, `SpawnTop` and `SpawnBot`, with the specified","delta":true}
+{"type":"message","timestamp":"2026-03-20T03:53:35.588Z","role":"assistant","content":" positions and `z_index`. I also validated that the modified scene file loads correctly in Godot.","delta":true}
+{"type":"tool_use","timestamp":"2026-03-20T03:53:35.629Z","tool_name":"run_shell_command","tool_id":"run_shell_command_1773978815629_0","parameters":{"command":"grep -C 10 \"SpawnBot\" scenes/main.tscn","description":"Final verification of the added nodes in the scene file."}}
+{"type":"tool_result","timestamp":"2026-03-20T03:53:35.674Z","tool_id":"run_shell_command_1773978815629_0","status":"success","output":"[node name=\"Trap\" type=\"Node2D\" parent=\".\" script=ExtResource(\"1_iovxz\")]\n\n[node name=\"Sprite2D\" type=\"Sprite2D\" parent=\"Trap\"]\ntexture = ExtResource(\"2_igidl\")\n\n[node name=\"SpawningPoints\" type=\"Node2D\" parent=\"Trap\"]\n\n[node name=\"SpawnTop\" type=\"Marker2D\" parent=\"Trap/SpawningPoints\"]\nposition = Vector2(0, 15)\n\n[node name=\"SpawnBot\" type=\"Marker2D\" parent=\"Trap/SpawningPoints\"]\nz_index = 1\nposition = Vector2(0, -15)"}
+{"type":"message","timestamp":"2026-03-20T03:53:39.416Z","role":"assistant","content":"I've confirmed the scene structure matches the request. Now, I'll take a quick look at `scripts/trap.gd` to see if any code updates are needed to support the new nodes.","delta":true}
+{"type":"tool_use","timestamp":"2026-03-20T03:53:39.416Z","tool_name":"read_file","tool_id":"read_file_1773978819416_0","parameters":{"file_path":"scripts/trap.gd"}}
+{"type":"tool_result","timestamp":"2026-03-20T03:53:39.450Z","tool_id":"read_file_1773978819416_0","status":"success","output":""}
+{"type":"message","timestamp":"2026-03-20T03:54:29.828Z","role":"assistant","content":"I have added the requested Node2D and Marker2D nodes to the `Trap` node in `scenes/main.tscn`. The `SpawningPoints` node and its children, `SpawnTop` (at `(0, 15)`) and","delta":true}
+{"type":"message","timestamp":"2026-03-20T03:54:29.872Z","role":"assistant","content":" `SpawnBot` (at `(0, -15)` with `z_index = 1`), are now correctly configured. The existing `scripts/trap.gd` is also already equipped to find and utilize these new nodes.","delta":true}
+{"type":"result","timestamp":"2026-03-20T03:54:29.991Z","status":"success","stats":{"total_tokens":45406,"input_tokens":42636,"output_tokens":625,"cached":22480,"input":20156,"duration_ms":123439,"tool_calls":5,"models":{"gemini-3-flash-preview":{"total_tokens":45406,"input_tokens":42636,"output_tokens":625,"cached":22480,"input":20156}}}}
+
+
+Stderr: YOLO mode is enabled. All tool calls will be automatically approved.
+Keychain initialization encountered an error: libsecret-1.so.0: cannot open shared object file: No such file or directory
+Using FileKeychain fallback for secure storage.
+Loaded cached credentials.
+YOLO mode is enabled. All tool calls will be automatically approved.
+[ERROR] [IDEClient] Failed to connect to IDE companion extension. Please ensure the extension is running. To install the extension, run /ide install.
+Attempt 1 failed with status 429. Retrying with backoff... GaxiosError: [{
+  "error": {
+    "code": 429,
+    "message": "No capacity available for model gemini-3-flash-preview on the server",
+    "errors": [
+      {
+        "message": "No capacity available for model gemini-3-flash-preview on the server",
+        "domain": "global",
+        "reason": "rateLimitExceeded"
+      }
+    ],
+    "status": "RESOURCE_EXHAUSTED",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+        "reason": "MODEL_CAPACITY_EXHAUSTED",
+        "domain": "cloudcode-pa.googleapis.com",
+        "metadata": {
+          "model": "gemini-3-flash-preview"
+        }
+      }
+    ]
+  }
+}
+]
+    at Gaxios._request (/home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/gaxios/build/src/gaxios.js:142:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async OAuth2Client.requestAsync (/home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/google-auth-library/build/src/auth/oauth2client.js:429:18)
+    at async CodeAssistServer.requestStreamingPost (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/code_assist/server.js:262:21)
+    at async CodeAssistServer.generateContentStream (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/code_assist/server.js:54:27)
+    at async file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/loggingContentGenerator.js:285:26
+    at async file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/telemetry/trace.js:81:20
+    at async retryWithBackoff (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/utils/retry.js:130:28)
+    at async GeminiChat.makeApiCallAndProcessStream (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/geminiChat.js:440:32)
+    at async GeminiChat.streamWithRetries (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/geminiChat.js:266:40) {
+  config: {
+    proxy: 'http://192.168.1.8:8345',
+    url: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse',
+    method: 'POST',
+    params: { alt: 'sse' },
+    headers: {
+      'Content-Type': 'application/json',
+      'User-Agent': 'GeminiCLI/0.34.0/gemini-3-flash-preview (linux; x64) google-api-nodejs-client/9.15.1',
+      Authorization: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+      'x-goog-api-client': 'gl-node/20.18.1'
+    },
+    responseType: 'stream',
+    body: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+    signal: AbortSignal { aborted: false },
+    retry: false,
+    paramsSerializer: [Function: paramsSerializer],
+    validateStatus: [Function: validateStatus],
+    agent: HttpsProxyAgent {
+      _events: [Object: null prototype],
+      _eventsCount: 2,
+      _maxListeners: undefined,
+      options: [Object],
+      requests: [Object: null prototype] {},
+      sockets: [Object: null prototype],
+      freeSockets: [Object: null prototype] {},
+      keepAliveMsecs: 1000,
+      keepAlive: false,
+      maxSockets: Infinity,
+      maxFreeSockets: 256,
+      scheduling: 'lifo',
+      maxTotalSockets: Infinity,
+      totalSocketCount: 1,
+      proxy: URL {},
+      proxyHeaders: {},
+      connectOpts: [Object],
+      [Symbol(shapeMode)]: false,
+      [Symbol(kCapture)]: false,
+      [Symbol(AgentBaseInternalState)]: [Object]
+    },
+    errorRedactor: [Function: defaultErrorRedactor]
+  },
+  response: {
+    config: {
+      proxy: 'http://192.168.1.8:8345',
+      url: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse',
+      method: 'POST',
+      params: [Object],
+      headers: [Object],
+      responseType: 'stream',
+      body: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+      signal: [AbortSignal],
+      retry: false,
+      paramsSerializer: [Function: paramsSerializer],
+      validateStatus: [Function: validateStatus],
+      agent: [HttpsProxyAgent],
+      errorRedactor: [Function: defaultErrorRedactor]
+    },
+    data: '[{\n' +
+      '  "error": {\n' +
+      '    "code": 429,\n' +
+      '    "message": "No capacity available for model gemini-3-flash-preview on the server",\n' +
+      '    "errors": [\n' +
+      '      {\n' +
+      '        "message": "No capacity available for model gemini-3-flash-preview on the server",\n' +
+      '        "domain": "global",\n' +
+      '        "reason": "rateLimitExceeded"\n' +
+      '      }\n' +
+      '    ],\n' +
+      '    "status": "RESOURCE_EXHAUSTED",\n' +
+      '    "details": [\n' +
+      '      {\n' +
+      '        "@type": "type.googleapis.com/google.rpc.ErrorInfo",\n' +
+      '        "reason": "MODEL_CAPACITY_EXHAUSTED",\n' +
+      '        "domain": "cloudcode-pa.googleapis.com",\n' +
+      '        "metadata": {\n' +
+      '          "model": "gemini-3-flash-preview"\n' +
+      '        }\n' +
+      '      }\n' +
+      '    ]\n' +
+      '  }\n' +
+      '}\n' +
+      ']',
+    headers: {
+      'alt-svc': 'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000',
+      connection: 'close',
+      'content-length': '630',
+      'content-type': 'application/json; charset=UTF-8',
+      date: 'Fri, 20 Mar 2026 03:52:28 GMT',
+      server: 'ESF',
+      'server-timing': 'gfet4t7; dur=1662',
+      vary: 'Origin, X-Origin, Referer',
+      'x-cloudaicompanion-trace-id': '6cff46959a9933ef',
+      'x-content-type-options': 'nosniff',
+      'x-frame-options': 'SAMEORIGIN',
+      'x-xss-protection': '0'
+    },
+    status: 429,
+    statusText: 'Too Many Requests',
+    request: {
+      responseURL: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse'
+    }
+  },
+  error: undefined,
+  status: 429,
+  [Symbol(gaxios-gaxios-error)]: '6.7.1'
+}
+Attempt 1 failed: You have exhausted your capacity on this model. Your quota will reset after 5s.. Retrying after 5860ms...
+
+
+
+Duration: 136.53 seconds
+Exit code: 0
+============================================================
+      Solver completed in 136.53s
+[3/5] Preparing validation environment...
+[4/5] Running validation...
+      Loaded
+      Running validation in: /tmp/gamedevbench_validation_0d3316b6 (headless mode)
+Validation result saved to: /home/seele003/TTS/gamedevbench-bp-old/results/task_task_0022.json
+[5/5] Saving results...
+✓ Benchmark cycle completed for task_0022
+  Results saved to: tasks/test_result/task_0022_gemini-cli_20260320_035433
+  Cleaned up sandbox: /tmp/gamedevbench_sandbox_170580d1
+  Cleaned up validation dir: /tmp/gamedevbench_validation_0d3316b6
+Progress saved to: /home/seele003/TTS/gamedevbench-bp-old/results/progress_gemini-cli_gemini-3-flash-preview.json
+Running benchmark for task: task_0036
+[1/5] Creating isolated sandbox environment...
+      Creating sandbox at: /tmp/gamedevbench_sandbox_315df87e
+[1.5/5] Loading sandbox in editor to import assets...
+      Assets loaded and imported
+[2/5] Solving task with gemini-cli (model: gemini-3-flash-preview): task_0036
+      Working directory: /tmp/gamedevbench_sandbox_315df87e
+============================================================
+SENDING PROMPT TO GEMINI CLI:
+============================================================
+Make the trait panel behave like the tutorial's left-column tracker. In res://scenes/trait_ui/trait_ui.tscn keep the existing node hierarchy but complete trait_ui.gd so that exporting trait_data: Trait populates the icon and name label, update(units) counts the number of unique unit names that include that trait, writes the count to %ActiveUnitsLabel, formats the threshold RichTextLabel with the BBCode returned by the Trait resource, and toggles the panel alpha to 1.0 when active and 0.5 when inactive. The Trait resource provided in data/traits must drive all text, and Main.tscn should keep instancing the TraitUI scene with the elf trait assigned.
+ You must complete the full task without any further assistance.
+ Godot is installed and you can run godot using the `godot` command. It is recommended to run this with a timeout (e.g., `timeout 10 godot` for 10 second timeout) to prevent hanging.You are a visual agent and can use images and videos to help you understand the state of the game.
+============================================================
+
+Running: gemini --yolo --model -p "..."
+
+GEMINI TRAJECTORY:
+============================================================
+{"type":"init","timestamp":"2026-03-20T03:54:47.614Z","session_id":"209283d3-df96-4b74-be86-c817d1e56002","model":"gemini-3-flash-preview"}
+{"type":"message","timestamp":"2026-03-20T03:54:47.615Z","role":"user","content":"Make the trait panel behave like the tutorial's left-column tracker. In res://scenes/trait_ui/trait_ui.tscn keep the existing node hierarchy but complete trait_ui.gd so that exporting trait_data: Trait populates the icon and name label, update(units) counts the number of unique unit names that include that trait, writes the count to %ActiveUnitsLabel, formats the threshold RichTextLabel with the BBCode returned by the Trait resource, and toggles the panel alpha to 1.0 when active and 0.5 when inactive. The Trait resource provided in data/traits must drive all text, and Main.tscn should keep instancing the TraitUI scene with the elf trait assigned.\n You must complete the full task without any further assistance.\n Godot is installed and you can run godot using the `godot` command. It is recommended to run this with a timeout (e.g., `timeout 10 godot` for 10 second timeout) to prevent hanging.You are a visual agent and can use images and videos to help you understand the state of the game."}
+{"type":"message","timestamp":"2026-03-20T03:56:01.548Z","role":"assistant","content":"I will begin by examining","delta":true}
+{"type":"message","timestamp":"2026-03-20T03:56:01.573Z","role":"assistant","content":" the project files to understand the existing structure and requirements for the trait panel implementation.\n","delta":true}
+{"type":"tool_use","timestamp":"2026-03-20T03:56:01.615Z","tool_name":"run_shell_command","tool_id":"run_shell_command_1773978961614_0","parameters":{"command":"ls -R data/ scenes/","description":"List contents of data and scenes directories to identify relevant files."}}
+{"type":"tool_result","timestamp":"2026-03-20T03:56:01.707Z","tool_id":"run_shell_command_1773978961614_0","status":"success","output":"data/:\ntraits  unit_stats\n\ndata/traits:\nelf_trait.tres  trait.gd  trait.gd.uid\n\ndata/unit_stats:\nexamples  unit_stats.gd  unit_stats.gd.uid\n\ndata/unit_stats/examples:\nelf_archer.tres  elf_marksman.tres\n\nscenes/:\nmain.tscn  trait_ui  unit\n\nscenes/trait_ui:\ntrait_ui.gd  trait_ui.gd.uid  trait_ui.tscn\n\nscenes/unit:\nunit.gd  unit.gd.uid  unit.tscn"}
+{"type":"message","timestamp":"2026-03-20T03:56:09.895Z","role":"assistant","content":"I will read `data/traits/trait.gd` to","delta":true}
+{"type":"message","timestamp":"2026-03-20T03:56:09.933Z","role":"assistant","content":" understand the trait's structure and the BBCode method.\n","delta":true}
+{"type":"tool_use","timestamp":"2026-03-20T03:56:09.978Z","tool_name":"read_file","tool_id":"read_file_1773978969978_0","parameters":{"file_path":"data/traits/trait.gd"}}
+{"type":"tool_result","timestamp":"2026-03-20T03:56:10.008Z","tool_id":"read_file_1773978969978_0","status":"success","output":""}
+{"type":"message","timestamp":"2026-03-20T03:56:34.915Z","role":"assistant","content":"I'll now examine `scenes/trait_ui/","delta":true}
+{"type":"message","timestamp":"2026-03-20T03:56:35.007Z","role":"assistant","content":"trait_ui.gd` to understand the current implementation.\n","delta":true}
+{"type":"tool_use","timestamp":"2026-03-20T03:56:35.060Z","tool_name":"read_file","tool_id":"read_file_1773978995060_0","parameters":{"file_path":"scenes/trait_ui/trait_ui.gd"}}
+{"type":"tool_result","timestamp":"2026-03-20T03:56:35.091Z","tool_id":"read_file_1773978995060_0","status":"success","output":""}
+{"type":"message","timestamp":"2026-03-20T03:57:16.634Z","role":"assistant","content":"I'll examine `unit_stats.gd` to confirm how unit stats and traits are structured.\n","delta":true}
+{"type":"tool_use","timestamp":"2026-03-20T03:57:16.964Z","tool_name":"read_file","tool_id":"read_file_1773979036964_0","parameters":{"file_path":"data/unit_stats/unit_stats.gd"}}
+{"type":"tool_result","timestamp":"2026-03-20T03:57:18.023Z","tool_id":"read_file_1773979036964_0","status":"success","output":""}
+{"type":"message","timestamp":"2026-03-20T03:57:28.169Z","role":"assistant","content":"I'll now read `unit.gd` to","delta":true}
+{"type":"message","timestamp":"2026-03-20T03:57:28.178Z","role":"assistant","content":" understand how the unit scene is implemented.\n","delta":true}
+{"type":"tool_use","timestamp":"2026-03-20T03:57:28.237Z","tool_name":"read_file","tool_id":"read_file_1773979048237_0","parameters":{"file_path":"scenes/unit/unit.gd"}}
+{"type":"tool_result","timestamp":"2026-03-20T03:57:28.270Z","tool_id":"read_file_1773979048237_0","status":"success","output":""}
+{"type":"message","timestamp":"2026-03-20T03:57:37.264Z","role":"assistant","content":"I'll now examine `elf_trait.tres` to determine the requirements for being considered","delta":true}
+{"type":"message","timestamp":"2026-03-20T03:57:37.370Z","role":"assistant","content":" \"active\".\n","delta":true}
+{"type":"tool_use","timestamp":"2026-03-20T03:57:37.370Z","tool_name":"read_file","tool_id":"read_file_1773979057370_0","parameters":{"file_path":"data/traits/elf_trait.tres"}}
+{"type":"tool_result","timestamp":"2026-03-20T03:57:37.382Z","tool_id":"read_file_1773979057370_0","status":"success","output":""}
+{"type":"message","timestamp":"2026-03-20T03:57:42.771Z","role":"assistant","content":"I'll now examine `main.tscn` to see how units are managed and where `TraitUI.update","delta":true}
+{"type":"message","timestamp":"2026-03-20T03:57:42.785Z","role":"assistant","content":"` is called.\n","delta":true}
+{"type":"tool_use","timestamp":"2026-03-20T03:57:42.847Z","tool_name":"read_file","tool_id":"read_file_1773979062847_0","parameters":{"file_path":"scenes/main.tscn"}}
+{"type":"tool_result","timestamp":"2026-03-20T03:57:42.947Z","tool_id":"read_file_1773979062847_0","status":"success","output":""}
+{"type":"message","timestamp":"2026-03-20T03:57:53.941Z","role":"assistant","content":"I'll check the `scripts","delta":true}
+{"type":"message","timestamp":"2026-03-20T03:57:53.954Z","role":"assistant","content":"/` folder for any other scripts that might call `update()`.\n","delta":true}
+{"type":"tool_use","timestamp":"2026-03-20T03:57:54.014Z","tool_name":"run_shell_command","tool_id":"run_shell_command_1773979074014_0","parameters":{"description":"List contents of scripts directory.","command":"ls scripts/"}}
+{"type":"tool_result","timestamp":"2026-03-20T03:57:54.071Z","tool_id":"run_shell_command_1773979074014_0","status":"success","output":""}
+{"type":"message","timestamp":"2026-03-20T03:58:06.947Z","role":"assistant","content":"I'll now examine `trait_ui.tscn` to confirm the node structure and ensure the UI","delta":true}
+{"type":"message","timestamp":"2026-03-20T03:58:06.993Z","role":"assistant","content":" elements are correctly identified.\n","delta":true}
+{"type":"tool_use","timestamp":"2026-03-20T03:58:07.098Z","tool_name":"read_file","tool_id":"read_file_1773979087098_0","parameters":{"file_path":"scenes/trait_ui/trait_ui.tscn"}}
+{"type":"tool_result","timestamp":"2026-03-20T03:58:07.110Z","tool_id":"read_file_1773979087098_0","status":"success","output":""}
+{"type":"message","timestamp":"2026-03-20T03:58:26.418Z","role":"assistant","content":"I'll now update `trait_ui.gd` with the implementation that populates the icon and labels, updates the count and BBCode in","delta":true}
+{"type":"message","timestamp":"2026-03-20T03:58:26.459Z","role":"assistant","content":" the `update` function, and toggles the panel alpha based on the `active` status.\n","delta":true}
+{"type":"tool_use","timestamp":"2026-03-20T03:58:26.783Z","tool_name":"write_file","tool_id":"write_file_1773979106783_0","parameters":{"content":"class_name TraitUI\nextends PanelContainer\n\n@export var trait_data: Trait : set = _set_trait_data\n@export var active: bool : set = _set_active\n\n@onready var trait_icon: TextureRect = %TraitIcon\n@onready var active_units_label: Label = %ActiveUnitsLabel\n@onready var trait_level_labels: RichTextLabel = %TraitLevelLabels\n@onready var trait_label: Label = %TraitLabel\n\n\nfunc _ready() -> void:\n\t_set_trait_data(trait_data)\n\t_set_active(active)\n\n\nfunc update(units: Array[Unit]) -> void:\n\tif not trait_data:\n\t\treturn\n\t\n\tvar count: int = trait_data.get_unique_unit_count(units)\n\tactive_units_label.text = str(count)\n\ttrait_level_labels.text = trait_data.get_levels_bbcode(count)\n\t\n\t_set_active(trait_data.is_active(count))\n\n\nfunc _set_trait_data(value: Trait) -> void:\n\ttrait_data = value\n\t\n\tif is_node_ready() and trait_data:\n\t\ttrait_icon.texture = trait_data.icon\n\t\ttrait_label.text = trait_data.name\n\n\nfunc _set_active(value: bool) -> void:\n\tactive = value\n\t\n\tif is_node_ready():\n\t\tmodulate.a = 1.0 if active else 0.5\n","file_path":"scenes/trait_ui/trait_ui.gd"}}
+{"type":"tool_result","timestamp":"2026-03-20T03:58:26.804Z","tool_id":"write_file_1773979106783_0","status":"success"}
+{"type":"message","timestamp":"2026-03-20T03:58:41.581Z","role":"assistant","content":"I'll","delta":true}
+{"type":"message","timestamp":"2026-03-20T03:58:41.592Z","role":"assistant","content":" now examine `elf_archer.tres` and `elf_marksman.tres` to see if they provide any additional context on how traits should behave.\n","delta":true}
+{"type":"tool_use","timestamp":"2026-03-20T03:58:41.671Z","tool_name":"read_file","tool_id":"read_file_1773979121671_0","parameters":{"file_path":"data/unit_stats/examples/elf_archer.tres"}}
+{"type":"tool_result","timestamp":"2026-03-20T03:58:41.685Z","tool_id":"read_file_1773979121671_0","status":"success","output":""}
+{"type":"message","timestamp":"2026-03-20T03:58:52.452Z","role":"assistant","content":"I'll now examine `elf","delta":true}
+{"type":"message","timestamp":"2026-03-20T03:58:52.514Z","role":"assistant","content":"_marksman.tres` for more context.\n","delta":true}
+{"type":"tool_use","timestamp":"2026-03-20T03:58:52.538Z","tool_name":"read_file","tool_id":"read_file_1773979132538_0","parameters":{"file_path":"data/unit_stats/examples/elf_marksman.tres"}}
+{"type":"tool_result","timestamp":"2026-03-20T03:58:52.550Z","tool_id":"read_file_1773979132538_0","status":"success","output":""}
+{"type":"message","timestamp":"2026-03-20T03:59:11.251Z","role":"assistant","content":"I'll now examine `scenes/unit/unit.tscn` to see if there's any other relevant information.\n","delta":true}
+{"type":"tool_use","timestamp":"2026-03-20T03:59:11.325Z","tool_name":"read_file","tool_id":"read_file_1773979151324_0","parameters":{"file_path":"scenes/unit/unit.tscn"}}
+{"type":"tool_result","timestamp":"2026-03-20T03:59:11.361Z","tool_id":"read_file_1773979151324_0","status":"success","output":""}
+{"type":"message","timestamp":"2026-03-20T03:59:40.602Z","role":"assistant","content":"I'll check `project.godot` for any autoloads or other relevant project settings.\n","delta":true}
+{"type":"tool_use","timestamp":"2026-03-20T03:59:40.698Z","tool_name":"read_file","tool_id":"read_file_1773979180698_0","parameters":{"file_path":"project.godot"}}
+{"type":"tool_result","timestamp":"2026-03-20T03:59:40.720Z","tool_id":"read_file_1773979180698_0","status":"success","output":""}
+{"type":"message","timestamp":"2026-03-20T03:59:56.030Z","role":"assistant","content":"I'll now write the final implementation of `trait_ui.gd` and perform a final check of the file content.\n","delta":true}
+{"type":"tool_use","timestamp":"2026-03-20T03:59:56.228Z","tool_name":"write_file","tool_id":"write_file_1773979196228_0","parameters":{"content":"class_name TraitUI\nextends PanelContainer\n\n@export var trait_data: Trait : set = _set_trait_data\n@export var active: bool : set = _set_active\n\n@onready var trait_icon: TextureRect = %TraitIcon\n@onready var active_units_label: Label = %ActiveUnitsLabel\n@onready var trait_level_labels: RichTextLabel = %TraitLevelLabels\n@onready var trait_label: Label = %TraitLabel\n\n\nfunc _ready() -> void:\n\t_set_trait_data(trait_data)\n\t_set_active(active)\n\n\nfunc update(units: Array[Unit]) -> void:\n\tif not trait_data:\n\t\treturn\n\t\n\tvar count: int = trait_data.get_unique_unit_count(units)\n\tactive_units_label.text = str(count)\n\ttrait_level_labels.text = trait_data.get_levels_bbcode(count)\n\t\n\tactive = trait_data.is_active(count)\n\n\nfunc _set_trait_data(value: Trait) -> void:\n\ttrait_data = value\n\t\n\tif is_node_ready() and trait_data:\n\t\ttrait_icon.texture = trait_data.icon\n\t\ttrait_label.text = trait_data.name\n\n\nfunc _set_active(value: bool) -> void:\n\tactive = value\n\t\n\tif is_node_ready():\n\t\tmodulate.a = 1.0 if active else 0.5\n","file_path":"scenes/trait_ui/trait_ui.gd"}}
+{"type":"tool_result","timestamp":"2026-03-20T03:59:56.253Z","tool_id":"write_file_1773979196228_0","status":"success"}
+{"type":"message","timestamp":"2026-03-20T04:00:08.012Z","role":"assistant","content":"I have completed the implementation of `trait_ui.gd","delta":true}
+{"type":"message","timestamp":"2026-03-20T04:00:08.075Z","role":"assistant","content":"`. The updated script now correctly populates the trait's icon and name labels from the exported `trait_data`. The `update` function calculates the unique unit count, updates the UI labels (including BBCode formatting for thresholds), and toggles the panel's alpha based on the trait's active status.\n\nThe final","delta":true}
+{"type":"message","timestamp":"2026-03-20T04:00:08.075Z","role":"assistant","content":" `trait_ui.gd` code:\n\n```gdscript\nclass_name TraitUI\nextends PanelContainer\n\n@export var trait_data: Trait : set = _set_trait_data\n@export var active: bool : set = _set_active\n\n@onready var trait_icon:","delta":true}
+{"type":"message","timestamp":"2026-03-20T04:00:08.171Z","role":"assistant","content":" TextureRect = %TraitIcon\n@onready var active_units_label: Label = %ActiveUnitsLabel\n@onready var trait_level_labels: RichTextLabel = %TraitLevelLabels\n@onready var trait_label: Label = %TraitLabel\n\n\nfunc _ready() -> void:","delta":true}
+{"type":"message","timestamp":"2026-03-20T04:00:08.475Z","role":"assistant","content":"\n\t_set_trait_data(trait_data)\n\t_set_active(active)\n\n\nfunc update(units: Array[Unit]) -> void:\n\tif not trait_data:\n\t\treturn\n\t\n\tvar count: int = trait_data.get_unique_unit","delta":true}
+{"type":"message","timestamp":"2026-03-20T04:00:08.760Z","role":"assistant","content":"_count(units)\n\tactive_units_label.text = str(count)\n\ttrait_level_labels.text = trait_data.get_levels_bbcode(count)\n\t\n\tactive = trait_data.is_active(count)\n\n\nfunc _set_trait","delta":true}
+{"type":"message","timestamp":"2026-03-20T04:00:09.112Z","role":"assistant","content":"_data(value: Trait) -> void:\n\ttrait_data = value\n\t\n\tif is_node_ready() and trait_data:\n\t\ttrait_icon.texture = trait_data.icon\n\t\ttrait_label.text = trait_data.name\n\n\nfunc _set","delta":true}
+{"type":"message","timestamp":"2026-03-20T04:00:09.343Z","role":"assistant","content":"_active(value: bool) -> void:\n\tactive = value\n\t\n\tif is_node_ready():\n\t\tmodulate.a = 1.0 if active else 0.5\n```\n","delta":true}
+{"type":"tool_use","timestamp":"2026-03-20T04:00:09.398Z","tool_name":"run_shell_command","tool_id":"run_shell_command_1773979209397_0","parameters":{"description":"Perform a quick headless check to ensure no syntax errors are present in the script.","command":"timeout 5 godot --headless --script res://scenes/trait_ui/trait_ui.gd"}}
+{"type":"tool_result","timestamp":"2026-03-20T04:00:09.622Z","tool_id":"run_shell_command_1773979209397_0","status":"success","output":"Godot Engine v4.6.1.stable.official.14d19694e - https://godotengine.org\n\nCan't load the script \"res://scenes/trait_ui/trait_ui.gd\" as it doesn't inherit from SceneTree or MainLoop.\nERROR: Can't load the script \"res://scenes/trait_ui/trait_ui.gd\" as it doesn't inherit from SceneTree or MainLoop.\n   at: start (main/main.cpp:4253)"}
+{"type":"message","timestamp":"2026-03-20T04:00:14.977Z","role":"assistant","content":"The","delta":true}
+{"type":"message","timestamp":"2026-03-20T04:00:14.991Z","role":"assistant","content":" trait panel's behavior has been implemented in `res://scenes/trait_ui/trait_ui.gd` as requested. The script now correctly exports the `trait","delta":true}
+{"type":"message","timestamp":"2026-03-20T04:00:15.010Z","role":"assistant","content":"_data` resource, which populates the icon and name label. The `update(units)` function calculates the count of unique units by name, updates the active units label, formats the threshold label with BBCode, and toggles the","delta":true}
+{"type":"message","timestamp":"2026-03-20T04:00:15.327Z","role":"assistant","content":" panel's alpha based on the trait's active status.\n\n```gdscript\nclass_name TraitUI\nextends PanelContainer\n\n@export var trait_data: Trait : set = _set_trait_data\n@export var","delta":true}
+{"type":"message","timestamp":"2026-03-20T04:00:15.597Z","role":"assistant","content":" active: bool : set = _set_active\n\n@onready var trait_icon: TextureRect = %TraitIcon\n@onready var active_units_label: Label = %ActiveUnitsLabel\n@onready var trait_level_labels: RichTextLabel = %TraitLevelLabels\n@on","delta":true}
+{"type":"message","timestamp":"2026-03-20T04:00:15.900Z","role":"assistant","content":"ready var trait_label: Label = %TraitLabel\n\n\nfunc _ready() -> void:\n\t_set_trait_data(trait_data)\n\t_set_active(active)\n\n\nfunc update(units: Array[Unit]) -> void:\n\tif not trait_data:\n\t\t","delta":true}
+{"type":"message","timestamp":"2026-03-20T04:00:16.139Z","role":"assistant","content":"return\n\t\n\tvar count: int = trait_data.get_unique_unit_count(units)\n\tactive_units_label.text = str(count)\n\ttrait_level_labels.text = trait_data.get_levels_bbcode(count)\n\t\n","delta":true}
+{"type":"message","timestamp":"2026-03-20T04:00:16.414Z","role":"assistant","content":"\tactive = trait_data.is_active(count)\n\n\nfunc _set_trait_data(value: Trait) -> void:\n\ttrait_data = value\n\t\n\tif is_node_ready() and trait_data:\n\t\ttrait_icon.texture = trait_data","delta":true}
+{"type":"message","timestamp":"2026-03-20T04:00:16.773Z","role":"assistant","content":".icon\n\t\ttrait_label.text = trait_data.name\n\n\nfunc _set_active(value: bool) -> void:\n\tactive = value\n\t\n\tif is_node_ready():\n\t\tmodulate.a = 1.0 if active else 0.5\n","delta":true}
+{"type":"message","timestamp":"2026-03-20T04:00:16.816Z","role":"assistant","content":"```\n\nThe `Trait` resource's `get_unique_unit_count`, `get_levels_bbcode`, and `is_active` methods are correctly utilized to drive the UI state. `Main.tscn` remains configured to instance this scene with the \"elf\" trait assigned.","delta":true}
+{"type":"result","timestamp":"2026-03-20T04:00:16.839Z","status":"success","stats":{"total_tokens":173781,"input_tokens":158009,"output_tokens":2426,"cached":109945,"input":48064,"duration_ms":329227,"tool_calls":16,"models":{"gemini-3-flash-preview":{"total_tokens":173781,"input_tokens":158009,"output_tokens":2426,"cached":109945,"input":48064}}}}
+
+
+Stderr: YOLO mode is enabled. All tool calls will be automatically approved.
+Keychain initialization encountered an error: libsecret-1.so.0: cannot open shared object file: No such file or directory
+Using FileKeychain fallback for secure storage.
+Loaded cached credentials.
+YOLO mode is enabled. All tool calls will be automatically approved.
+[ERROR] [IDEClient] Failed to connect to IDE companion extension. Please ensure the extension is running. To install the extension, run /ide install.
+Attempt 1 failed with status 429. Retrying with backoff... GaxiosError: [{
+  "error": {
+    "code": 429,
+    "message": "No capacity available for model gemini-3-flash-preview on the server",
+    "errors": [
+      {
+        "message": "No capacity available for model gemini-3-flash-preview on the server",
+        "domain": "global",
+        "reason": "rateLimitExceeded"
+      }
+    ],
+    "status": "RESOURCE_EXHAUSTED",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+        "reason": "MODEL_CAPACITY_EXHAUSTED",
+        "domain": "cloudcode-pa.googleapis.com",
+        "metadata": {
+          "model": "gemini-3-flash-preview"
+        }
+      }
+    ]
+  }
+}
+]
+    at Gaxios._request (/home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/gaxios/build/src/gaxios.js:142:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async OAuth2Client.requestAsync (/home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/google-auth-library/build/src/auth/oauth2client.js:429:18)
+    at async CodeAssistServer.requestStreamingPost (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/code_assist/server.js:262:21)
+    at async CodeAssistServer.generateContentStream (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/code_assist/server.js:54:27)
+    at async file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/loggingContentGenerator.js:285:26
+    at async file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/telemetry/trace.js:81:20
+    at async retryWithBackoff (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/utils/retry.js:130:28)
+    at async GeminiChat.makeApiCallAndProcessStream (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/geminiChat.js:440:32)
+    at async GeminiChat.streamWithRetries (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/geminiChat.js:266:40) {
+  config: {
+    proxy: 'http://192.168.1.8:8345',
+    url: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse',
+    method: 'POST',
+    params: { alt: 'sse' },
+    headers: {
+      'Content-Type': 'application/json',
+      'User-Agent': 'GeminiCLI/0.34.0/gemini-3-flash-preview (linux; x64) google-api-nodejs-client/9.15.1',
+      Authorization: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+      'x-goog-api-client': 'gl-node/20.18.1'
+    },
+    responseType: 'stream',
+    body: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+    signal: AbortSignal { aborted: false },
+    retry: false,
+    paramsSerializer: [Function: paramsSerializer],
+    validateStatus: [Function: validateStatus],
+    agent: HttpsProxyAgent {
+      _events: [Object: null prototype],
+      _eventsCount: 2,
+      _maxListeners: undefined,
+      options: [Object],
+      requests: [Object: null prototype] {},
+      sockets: [Object: null prototype],
+      freeSockets: [Object: null prototype] {},
+      keepAliveMsecs: 1000,
+      keepAlive: false,
+      maxSockets: Infinity,
+      maxFreeSockets: 256,
+      scheduling: 'lifo',
+      maxTotalSockets: Infinity,
+      totalSocketCount: 1,
+      proxy: URL {},
+      proxyHeaders: {},
+      connectOpts: [Object],
+      [Symbol(shapeMode)]: false,
+      [Symbol(kCapture)]: false,
+      [Symbol(AgentBaseInternalState)]: [Object]
+    },
+    errorRedactor: [Function: defaultErrorRedactor]
+  },
+  response: {
+    config: {
+      proxy: 'http://192.168.1.8:8345',
+      url: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse',
+      method: 'POST',
+      params: [Object],
+      headers: [Object],
+      responseType: 'stream',
+      body: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+      signal: [AbortSignal],
+      retry: false,
+      paramsSerializer: [Function: paramsSerializer],
+      validateStatus: [Function: validateStatus],
+      agent: [HttpsProxyAgent],
+      errorRedactor: [Function: defaultErrorRedactor]
+    },
+    data: '[{\n' +
+      '  "error": {\n' +
+      '    "code": 429,\n' +
+      '    "message": "No capacity available for model gemini-3-flash-preview on the server",\n' +
+      '    "errors": [\n' +
+      '      {\n' +
+      '        "message": "No capacity available for model gemini-3-flash-preview on the server",\n' +
+      '        "domain": "global",\n' +
+      '        "reason": "rateLimitExceeded"\n' +
+      '      }\n' +
+      '    ],\n' +
+      '    "status": "RESOURCE_EXHAUSTED",\n' +
+      '    "details": [\n' +
+      '      {\n' +
+      '        "@type": "type.googleapis.com/google.rpc.ErrorInfo",\n' +
+      '        "reason": "MODEL_CAPACITY_EXHAUSTED",\n' +
+      '        "domain": "cloudcode-pa.googleapis.com",\n' +
+      '        "metadata": {\n' +
+      '          "model": "gemini-3-flash-preview"\n' +
+      '        }\n' +
+      '      }\n' +
+      '    ]\n' +
+      '  }\n' +
+      '}\n' +
+      ']',
+    headers: {
+      'alt-svc': 'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000',
+      connection: 'close',
+      'content-length': '630',
+      'content-type': 'application/json; charset=UTF-8',
+      date: 'Fri, 20 Mar 2026 03:56:11 GMT',
+      server: 'ESF',
+      'server-timing': 'gfet4t7; dur=1719',
+      vary: 'Origin, X-Origin, Referer',
+      'x-cloudaicompanion-trace-id': '7239fea8e3fdb36d',
+      'x-content-type-options': 'nosniff',
+      'x-frame-options': 'SAMEORIGIN',
+      'x-xss-protection': '0'
+    },
+    status: 429,
+    statusText: 'Too Many Requests',
+    request: {
+      responseURL: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse'
+    }
+  },
+  error: undefined,
+  status: 429,
+  [Symbol(gaxios-gaxios-error)]: '6.7.1'
+}
+Attempt 1 failed: You have exhausted your capacity on this model. Your quota will reset after 1s.. Retrying after 5072ms...
+Attempt 1 failed: You have exhausted your capacity on this model. Your quota will reset after 0s.. Retrying after 5346ms...
+
+
+
+Duration: 340.59 seconds
+Exit code: 0
+============================================================
+      Solver completed in 340.59s
+[3/5] Preparing validation environment...
+[4/5] Running validation...
+      Loaded
+      Running validation in: /tmp/gamedevbench_validation_958fa4fd (headless mode)
+Validation result saved to: /home/seele003/TTS/gamedevbench-bp-old/results/task_task_0036.json
+[5/5] Saving results...
+✓ Benchmark cycle completed for task_0036
+  Results saved to: tasks/test_result/task_0036_gemini-cli_20260320_040020
+  Cleaned up sandbox: /tmp/gamedevbench_sandbox_315df87e
+  Cleaned up validation dir: /tmp/gamedevbench_validation_958fa4fd
+Progress saved to: /home/seele003/TTS/gamedevbench-bp-old/results/progress_gemini-cli_gemini-3-flash-preview.json
+Running benchmark for task: task_0066
+[1/5] Creating isolated sandbox environment...
+      Creating sandbox at: /tmp/gamedevbench_sandbox_09944d65
+[1.5/5] Loading sandbox in editor to import assets...
+      Assets loaded and imported
+[2/5] Solving task with gemini-cli (model: gemini-3-flash-preview): task_0066
+      Working directory: /tmp/gamedevbench_sandbox_09944d65
+============================================================
+SENDING PROMPT TO GEMINI CLI:
+============================================================
+Turn the SafePlatform scene into a multi-tile platform: Add a hidden Node2D node named `Templates` that holds a Sprite2D using the supplied assets/sprites/tile_0108.tres texture and a matching CollisionShape2D, export length (1–5) and tile_offset_amount on the @tool script, implement setupLength() so changing the length clears Area2D and duplicates the templates with that offset. Extend PlayerMover2D with helper methods, such as clearCollisionShapes and addCollisionShape, so the platform feeds matching collision shapes into the mover each time setupLength() is called.
+ You must complete the full task without any further assistance.
+ Godot is installed and you can run godot using the `godot` command. It is recommended to run this with a timeout (e.g., `timeout 10 godot` for 10 second timeout) to prevent hanging.You are a visual agent and can use images and videos to help you understand the state of the game.
+============================================================
+
+Running: gemini --yolo --model -p "..."
+
+GEMINI TRAJECTORY:
+============================================================
+{"type":"init","timestamp":"2026-03-20T04:00:33.419Z","session_id":"0f578dcb-06ab-4723-88a6-b79724300082","model":"gemini-3-flash-preview"}
+{"type":"message","timestamp":"2026-03-20T04:00:33.429Z","role":"user","content":"Turn the SafePlatform scene into a multi-tile platform: Add a hidden Node2D node named `Templates` that holds a Sprite2D using the supplied assets/sprites/tile_0108.tres texture and a matching CollisionShape2D, export length (1–5) and tile_offset_amount on the @tool script, implement setupLength() so changing the length clears Area2D and duplicates the templates with that offset. Extend PlayerMover2D with helper methods, such as clearCollisionShapes and addCollisionShape, so the platform feeds matching collision shapes into the mover each time setupLength() is called.\n You must complete the full task without any further assistance.\n Godot is installed and you can run godot using the `godot` command. It is recommended to run this with a timeout (e.g., `timeout 10 godot` for 10 second timeout) to prevent hanging.You are a visual agent and can use images and videos to help you understand the state of the game."}
+{"type":"message","timestamp":"2026-03-20T04:00:41.916Z","role":"assistant","content":"I will begin by exploring the project structure and examining the existing scripts and scenes to understand the current implementation of `SafePlatform` and `PlayerMover2D`.","delta":true}
+{"type":"tool_use","timestamp":"2026-03-20T04:00:41.921Z","tool_name":"list_directory","tool_id":"list_directory_1773979241921_0","parameters":{"dir_path":"/tmp/gamedevbench_sandbox_09944d65"}}
+{"type":"tool_use","timestamp":"2026-03-20T04:00:41.960Z","tool_name":"read_file","tool_id":"read_file_1773979241960_1","parameters":{"file_path":"/tmp/gamedevbench_sandbox_09944d65/scripts/safe_platform.gd"}}
+{"type":"tool_use","timestamp":"2026-03-20T04:00:42.015Z","tool_name":"read_file","tool_id":"read_file_1773979242015_2","parameters":{"file_path":"/tmp/gamedevbench_sandbox_09944d65/scripts/player_mover_2d.gd"}}
+{"type":"tool_result","timestamp":"2026-03-20T04:00:42.069Z","tool_id":"list_directory_1773979241921_0","status":"success","output":"Listed 7 item(s)."}
+{"type":"tool_result","timestamp":"2026-03-20T04:00:42.069Z","tool_id":"read_file_1773979241960_1","status":"success","output":""}
+{"type":"tool_result","timestamp":"2026-03-20T04:00:42.069Z","tool_id":"read_file_1773979242015_2","status":"success","output":""}
+{"type":"message","timestamp":"2026-03-20T04:00:45.701Z","role":"assistant","content":"I will now examine the `SafePlatform` and `PlayerMover2D` scene files to understand their node structures and hierarchies.","delta":true}
+{"type":"tool_use","timestamp":"2026-03-20T04:00:45.708Z","tool_name":"read_file","tool_id":"read_file_1773979245708_0","parameters":{"file_path":"/tmp/gamedevbench_sandbox_09944d65/scenes/safe_platform.tscn"}}
+{"type":"tool_use","timestamp":"2026-03-20T04:00:45.781Z","tool_name":"read_file","tool_id":"read_file_1773979245781_1","parameters":{"file_path":"/tmp/gamedevbench_sandbox_09944d65/scenes/player_mover_2d.tscn"}}
+{"type":"tool_result","timestamp":"2026-03-20T04:00:45.794Z","tool_id":"read_file_1773979245708_0","status":"success","output":""}
+{"type":"tool_result","timestamp":"2026-03-20T04:00:45.794Z","tool_id":"read_file_1773979245781_1","status":"success","output":""}
+{"type":"message","timestamp":"2026-03-20T04:01:44.518Z","role":"assistant","content":"I will begin by updating the `PlayerMover2D` script to include the `clearCollisionShapes` and `addCollisionShape` helper methods, ensuring that I properly reference the `PlayerDetector` node.","delta":true}
+{"type":"tool_use","timestamp":"2026-03-20T04:01:44.726Z","tool_name":"replace","tool_id":"replace_1773979304726_0","parameters":{"new_string":"@tool\nextends Node2D\nclass_name PlayerMover2D\n\nvar player: Node2D = null\n\n@onready var player_detector: Area2D = $PlayerDetector\n\nfunc _on_player_detector_area_entered(area: Area2D) -> void:\n\tplayer = area\n\nfunc _on_player_detector_area_exited(_area: Area2D) -> void:\n\tplayer = null\n\nfunc move_player(movement_amount: Vector2) -> void:\n\tif player:\n\t\tplayer.position += movement_amount\n\nfunc clearCollisionShapes() -> void:\n\tfor child in player_detector.get_children():\n\t\tchild.queue_free()\n\nfunc addCollisionShape(collision_shape: CollisionShape2D) -> void:\n\tplayer_detector.add_child(collision_shape)\n","file_path":"/tmp/gamedevbench_sandbox_09944d65/scripts/player_mover_2d.gd","instruction":"Implement clearCollisionShapes and addCollisionShape helper methods.","old_string":"@tool\nextends Node2D\nclass_name PlayerMover2D\n\nvar player: Node2D = null\n\nfunc _on_player_detector_area_entered(area: Area2D) -> void:\n\tplayer = area\n\nfunc _on_player_detector_area_exited(_area: Area2D) -> void:\n\tplayer = null\n\nfunc move_player(movement_amount: Vector2) -> void:\n\tif player:\n\t\tplayer.position += movement_amount\n\n# TODO: expose helpers so the platform script can rebuild the detector's collision shapes.\n"}}
+{"type":"tool_result","timestamp":"2026-03-20T04:01:44.746Z","tool_id":"replace_1773979304726_0","status":"success"}
+{"type":"message","timestamp":"2026-03-20T04:01:48.916Z","role":"assistant","content":"I will now modify the `SafePlatform` scene by adding a hidden `Templates` node and moving the existing `Sprite2D` and `CollisionShape2D` under it, ensuring they are properly structured for duplication during the `setupLength()` execution.","delta":true}
+{"type":"tool_use","timestamp":"2026-03-20T04:01:48.955Z","tool_name":"read_file","tool_id":"read_file_1773979308955_0","parameters":{"file_path":"/tmp/gamedevbench_sandbox_09944d65/scenes/safe_platform.tscn"}}
+{"type":"tool_result","timestamp":"2026-03-20T04:01:48.978Z","tool_id":"read_file_1773979308955_0","status":"success","output":""}
+{"type":"message","timestamp":"2026-03-20T04:02:53.889Z","role":"assistant","content":"I will now update the `SafePlatform` scene to include a hidden `Templates` node and ensure that `Area2D` is empty, as its","delta":true}
+{"type":"message","timestamp":"2026-03-20T04:02:53.930Z","role":"assistant","content":" contents will now be managed by the script through the `setupLength()` function.","delta":true}
+{"type":"tool_use","timestamp":"2026-03-20T04:02:54.252Z","tool_name":"replace","tool_id":"replace_1773979374252_0","parameters":{"file_path":"/tmp/gamedevbench_sandbox_09944d65/scenes/safe_platform.tscn","new_string":"[node name=\"Area2D\" type=\"Area2D\" parent=\".\"]\ncollision_layer = 16\ncollision_mask = 0\n\n[node name=\"Templates\" type=\"Node2D\" parent=\".\"]\nvisible = false\n\n[node name=\"Sprite2D\" type=\"Sprite2D\" parent=\"Templates\"]\ntexture = ExtResource(\"5_t7r7s\")\ncentered = false\n\n[node name=\"CollisionShape2D\" type=\"CollisionShape2D\" parent=\"Templates\"]\nposition = Vector2(8, 8)\nshape = SubResource(\"RectangleShape2D_ns69l\")\n\n[node name=\"PlayerMover2D\" parent=\".\" instance=ExtResource(\"4_f3s58\")]\n","old_string":"[node name=\"Area2D\" type=\"Area2D\" parent=\".\"]\ncollision_layer = 16\ncollision_mask = 0\n\n[node name=\"Sprite2D\" type=\"Sprite2D\" parent=\"Area2D\"]\ntexture = ExtResource(\"5_t7r7s\")\ncentered = false\n\n[node name=\"CollisionShape2D\" type=\"CollisionShape2D\" parent=\"Area2D\"]\nposition = Vector2(8, 8)\nshape = SubResource(\"RectangleShape2D_ns69l\")\n\n[node name=\"PlayerMover2D\" parent=\".\" instance=ExtResource(\"4_f3s58\")]\n","instruction":"Add a hidden Templates Node2D with Sprite2D and CollisionShape2D, and clear Area2D children."}}
+{"type":"tool_result","timestamp":"2026-03-20T04:02:54.265Z","tool_id":"replace_1773979374252_0","status":"success"}
+{"type":"message","timestamp":"2026-03-20T04:03:05.578Z","role":"assistant","content":"I will now implement the `@tool` script for `SafePlatform`, incorporating the `length` and `tile_offset_amount` exports with setters","delta":true}
+{"type":"message","timestamp":"2026-03-20T04:03:05.659Z","role":"assistant","content":" that trigger `setupLength()`, ensuring that `Area2D` is cleared and both sprites and collision shapes are correctly duplicated and positioned.","delta":true}
+{"type":"tool_use","timestamp":"2026-03-20T04:03:05.856Z","tool_name":"replace","tool_id":"replace_1773979385856_0","parameters":{"old_string":"extends Node2D\n\n@export var speed: Vector2 = Vector2(32, 0)\n@export var rotation_offset: Vector2 = Vector2(256, 0)\n@export_range(1, 5) var length: int = 1\n\nfunc _ready() -> void:\n\t$AutoMover2D.speed = speed\n\t$VisibilityOffset2D.offset_amount = rotation_offset\n\t# Currently only duplicates whatever static children live inside Area2D.\n\t# The adjustable multi-tile behavior + editor preview still need to be implemented.\n","file_path":"/tmp/gamedevbench_sandbox_09944d65/scripts/safe_platform.gd","new_string":"@tool\nextends Node2D\n\n@export var speed: Vector2 = Vector2(32, 0)\n@export var rotation_offset: Vector2 = Vector2(256, 0)\n@export var tile_offset_amount: Vector2 = Vector2(16, 0):\n\tset(val):\n\t\ttile_offset_amount = val\n\t\tif is_inside_tree():\n\t\t\tsetupLength()\n\n@export_range(1, 5) var length: int = 1:\n\tset(val):\n\t\tlength = val\n\t\tif is_inside_tree():\n\t\t\tsetupLength()\n\nfunc _ready() -> void:\n\tif not Engine.is_editor_hint():\n\t\t$AutoMover2D.speed = speed\n\t\t$VisibilityOffset2D.offset_amount = rotation_offset\n\tsetupLength()\n\nfunc setupLength() -> void:\n\tvar area_2d = get_node_or_null(\"Area2D\")\n\tvar templates = get_node_or_null(\"Templates\")\n\tvar player_mover = get_node_or_null(\"PlayerMover2D\")\n\t\n\tif not area_2d or not templates or not player_mover:\n\t\treturn\n\t\n\t# Clear Area2D\n\tfor child in area_2d.get_children():\n\t\tarea_2d.remove_child(child)\n\t\tchild.queue_free()\n\t\n\t# Clear PlayerMover2D collision shapes\n\tplayer_mover.clearCollisionShapes()\n\t\n\tvar sprite_template = templates.get_node(\"Sprite2D\")\n\tvar collision_template = templates.get_node(\"CollisionShape2D\")\n\t\n\tfor i in range(length):\n\t\tvar offset = tile_offset_amount * i\n\t\t\n\t\tvar new_sprite = sprite_template.duplicate()\n\t\tnew_sprite.position += offset\n\t\tarea_2d.add_child(new_sprite)\n\t\t\n\t\tvar new_collision = collision_template.duplicate()\n\t\tnew_collision.position += offset\n\t\tarea_2d.add_child(new_collision)\n\t\t\n\t\tvar mover_collision = collision_template.duplicate()\n\t\tmover_collision.position += offset\n\t\tplayer_mover.addCollisionShape(mover_collision)\n","instruction":"Implement @tool script with length and tile_offset_amount exports and setupLength logic."}}
+{"type":"tool_result","timestamp":"2026-03-20T04:03:05.872Z","tool_id":"replace_1773979385856_0","status":"success"}
+{"type":"message","timestamp":"2026-03-20T04:03:26.320Z","role":"assistant","content":"I will now update the `PlayerM","delta":true}
+{"type":"message","timestamp":"2026-03-20T04:03:26.332Z","role":"assistant","content":"over2D` script to include robustness checks, ensuring that `player_detector` is properly retrieved before attempting to clear or add collision shapes, preventing potential null reference errors during execution.","delta":true}
+{"type":"tool_use","timestamp":"2026-03-20T04:03:26.597Z","tool_name":"replace","tool_id":"replace_1773979406597_0","parameters":{"file_path":"/tmp/gamedevbench_sandbox_09944d65/scripts/player_mover_2d.gd","instruction":"Make clearCollisionShapes and addCollisionShape more robust.","old_string":"func clearCollisionShapes() -> void:\n\tfor child in player_detector.get_children():\n\t\tchild.queue_free()\n\nfunc addCollisionShape(collision_shape: CollisionShape2D) -> void:\n\tplayer_detector.add_child(collision_shape)\n","new_string":"func clearCollisionShapes() -> void:\n\tif not player_detector:\n\t\tplayer_detector = get_node_or_null(\"PlayerDetector\")\n\tif player_detector:\n\t\tfor child in player_detector.get_children():\n\t\t\tplayer_detector.remove_child(child)\n\t\t\tchild.queue_free()\n\nfunc addCollisionShape(collision_shape: CollisionShape2D) -> void:\n\tif not player_detector:\n\t\tplayer_detector = get_node_or_null(\"PlayerDetector\")\n\tif player_detector:\n\t\tplayer_detector.add_child(collision_shape)\n"}}
+{"type":"tool_result","timestamp":"2026-03-20T04:03:26.610Z","tool_id":"replace_1773979406597_0","status":"success"}
+{"type":"message","timestamp":"2026-03-20T04:03:46.812Z","role":"assistant","content":"I will now check the `auto_mover_2d.gd` and `visibility_offset_2d.gd","delta":true}
+{"type":"message","timestamp":"2026-03-20T04:03:46.880Z","role":"assistant","content":"` scripts to determine if they are `@tool` scripts and if their properties have any visual impact in the editor.","delta":true}
+{"type":"tool_use","timestamp":"2026-03-20T04:03:46.962Z","tool_name":"read_file","tool_id":"read_file_1773979426962_0","parameters":{"file_path":"/tmp/gamedevbench_sandbox_09944d65/scripts/auto_mover_2d.gd"}}
+{"type":"tool_use","timestamp":"2026-03-20T04:03:46.963Z","tool_name":"read_file","tool_id":"read_file_1773979426963_1","parameters":{"file_path":"/tmp/gamedevbench_sandbox_09944d65/scripts/visibility_offset_2d.gd"}}
+{"type":"tool_result","timestamp":"2026-03-20T04:03:46.983Z","tool_id":"read_file_1773979426962_0","status":"success","output":""}
+{"type":"tool_result","timestamp":"2026-03-20T04:03:46.983Z","tool_id":"read_file_1773979426963_1","status":"success","output":""}
+{"type":"message","timestamp":"2026-03-20T04:04:11.362Z","role":"assistant","content":"I have successfully completed the task. I updated `PlayerMover2D.gd` with the required helper methods and made them robust for use in tool scripts. I modified the `SafePlatform` scene to include","delta":true}
+{"type":"message","timestamp":"2026-03-20T04:04:11.468Z","role":"assistant","content":" a hidden `Templates` node and a managed `Area2D`. Finally, I implemented the `@tool` script for `SafePlatform` with the specified exports and the `setupLength()` logic to dynamically generate tiles and collision shapes.\n\nSummary of changes:\n- **`scripts/player_mover_2d.","delta":true}
+{"type":"message","timestamp":"2026-03-20T04:04:11.492Z","role":"assistant","content":"gd`**: Added `clearCollisionShapes()` and `addCollisionShape(collision_shape)` methods.\n- **`scenes/safe_platform.tscn`**: Added a hidden `Templates` node containing `Sprite2D` and `CollisionShape2D` templates and cleared the initial children of `Area2","delta":true}
+{"type":"message","timestamp":"2026-03-20T04:04:11.502Z","role":"assistant","content":"D`.\n- **`scripts/safe_platform.gd`**: Converted to a `@tool` script, added `length` and `tile_offset_amount` exports with setters, and implemented `setupLength()` to handle the multi-tile platform generation and sync collision shapes with `PlayerMover2","delta":true}
+{"type":"message","timestamp":"2026-03-20T04:04:11.600Z","role":"assistant","content":"D`.","delta":true}
+{"type":"result","timestamp":"2026-03-20T04:04:11.672Z","status":"success","stats":{"total_tokens":95803,"input_tokens":84242,"output_tokens":2606,"cached":54697,"input":29545,"duration_ms":218254,"tool_calls":12,"models":{"gemini-3-flash-preview":{"total_tokens":95803,"input_tokens":84242,"output_tokens":2606,"cached":54697,"input":29545}}}}
+
+
+Stderr: YOLO mode is enabled. All tool calls will be automatically approved.
+Keychain initialization encountered an error: libsecret-1.so.0: cannot open shared object file: No such file or directory
+Using FileKeychain fallback for secure storage.
+Loaded cached credentials.
+YOLO mode is enabled. All tool calls will be automatically approved.
+[ERROR] [IDEClient] Failed to connect to IDE companion extension. Please ensure the extension is running. To install the extension, run /ide install.
+Attempt 1 failed with status 429. Retrying with backoff... GaxiosError: [{
+  "error": {
+    "code": 429,
+    "message": "No capacity available for model gemini-3-flash-preview on the server",
+    "errors": [
+      {
+        "message": "No capacity available for model gemini-3-flash-preview on the server",
+        "domain": "global",
+        "reason": "rateLimitExceeded"
+      }
+    ],
+    "status": "RESOURCE_EXHAUSTED",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+        "reason": "MODEL_CAPACITY_EXHAUSTED",
+        "domain": "cloudcode-pa.googleapis.com",
+        "metadata": {
+          "model": "gemini-3-flash-preview"
+        }
+      }
+    ]
+  }
+}
+]
+    at Gaxios._request (/home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/gaxios/build/src/gaxios.js:142:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async OAuth2Client.requestAsync (/home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/google-auth-library/build/src/auth/oauth2client.js:429:18)
+    at async CodeAssistServer.requestStreamingPost (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/code_assist/server.js:262:21)
+    at async CodeAssistServer.generateContentStream (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/code_assist/server.js:54:27)
+    at async file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/loggingContentGenerator.js:285:26
+    at async file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/telemetry/trace.js:81:20
+    at async retryWithBackoff (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/utils/retry.js:130:28)
+    at async GeminiChat.makeApiCallAndProcessStream (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/geminiChat.js:440:32)
+    at async GeminiChat.streamWithRetries (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/geminiChat.js:266:40) {
+  config: {
+    proxy: 'http://192.168.1.8:8345',
+    url: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse',
+    method: 'POST',
+    params: { alt: 'sse' },
+    headers: {
+      'Content-Type': 'application/json',
+      'User-Agent': 'GeminiCLI/0.34.0/gemini-3-flash-preview (linux; x64) google-api-nodejs-client/9.15.1',
+      Authorization: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+      'x-goog-api-client': 'gl-node/20.18.1'
+    },
+    responseType: 'stream',
+    body: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+    signal: AbortSignal { aborted: false },
+    retry: false,
+    paramsSerializer: [Function: paramsSerializer],
+    validateStatus: [Function: validateStatus],
+    agent: HttpsProxyAgent {
+      _events: [Object: null prototype],
+      _eventsCount: 2,
+      _maxListeners: undefined,
+      options: [Object],
+      requests: [Object: null prototype] {},
+      sockets: [Object: null prototype],
+      freeSockets: [Object: null prototype] {},
+      keepAliveMsecs: 1000,
+      keepAlive: false,
+      maxSockets: Infinity,
+      maxFreeSockets: 256,
+      scheduling: 'lifo',
+      maxTotalSockets: Infinity,
+      totalSocketCount: 1,
+      proxy: URL {},
+      proxyHeaders: {},
+      connectOpts: [Object],
+      [Symbol(shapeMode)]: false,
+      [Symbol(kCapture)]: false,
+      [Symbol(AgentBaseInternalState)]: [Object]
+    },
+    errorRedactor: [Function: defaultErrorRedactor]
+  },
+  response: {
+    config: {
+      proxy: 'http://192.168.1.8:8345',
+      url: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse',
+      method: 'POST',
+      params: [Object],
+      headers: [Object],
+      responseType: 'stream',
+      body: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+      signal: [AbortSignal],
+      retry: false,
+      paramsSerializer: [Function: paramsSerializer],
+      validateStatus: [Function: validateStatus],
+      agent: [HttpsProxyAgent],
+      errorRedactor: [Function: defaultErrorRedactor]
+    },
+    data: '[{\n' +
+      '  "error": {\n' +
+      '    "code": 429,\n' +
+      '    "message": "No capacity available for model gemini-3-flash-preview on the server",\n' +
+      '    "errors": [\n' +
+      '      {\n' +
+      '        "message": "No capacity available for model gemini-3-flash-preview on the server",\n' +
+      '        "domain": "global",\n' +
+      '        "reason": "rateLimitExceeded"\n' +
+      '      }\n' +
+      '    ],\n' +
+      '    "status": "RESOURCE_EXHAUSTED",\n' +
+      '    "details": [\n' +
+      '      {\n' +
+      '        "@type": "type.googleapis.com/google.rpc.ErrorInfo",\n' +
+      '        "reason": "MODEL_CAPACITY_EXHAUSTED",\n' +
+      '        "domain": "cloudcode-pa.googleapis.com",\n' +
+      '        "metadata": {\n' +
+      '          "model": "gemini-3-flash-preview"\n' +
+      '        }\n' +
+      '      }\n' +
+      '    ]\n' +
+      '  }\n' +
+      '}\n' +
+      ']',
+    headers: {
+      'alt-svc': 'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000',
+      connection: 'close',
+      'content-length': '630',
+      'content-type': 'application/json; charset=UTF-8',
+      date: 'Fri, 20 Mar 2026 04:00:47 GMT',
+      server: 'ESF',
+      'server-timing': 'gfet4t7; dur=1724',
+      vary: 'Origin, X-Origin, Referer',
+      'x-cloudaicompanion-trace-id': 'aa0c2f19c1a54272',
+      'x-content-type-options': 'nosniff',
+      'x-frame-options': 'SAMEORIGIN',
+      'x-xss-protection': '0'
+    },
+    status: 429,
+    statusText: 'Too Many Requests',
+    request: {
+      responseURL: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse'
+    }
+  },
+  error: undefined,
+  status: 429,
+  [Symbol(gaxios-gaxios-error)]: '6.7.1'
+}
+Attempt 2 failed with status 429. Retrying with backoff... GaxiosError: [{
+  "error": {
+    "code": 429,
+    "message": "No capacity available for model gemini-3-flash-preview on the server",
+    "errors": [
+      {
+        "message": "No capacity available for model gemini-3-flash-preview on the server",
+        "domain": "global",
+        "reason": "rateLimitExceeded"
+      }
+    ],
+    "status": "RESOURCE_EXHAUSTED",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+        "reason": "MODEL_CAPACITY_EXHAUSTED",
+        "domain": "cloudcode-pa.googleapis.com",
+        "metadata": {
+          "model": "gemini-3-flash-preview"
+        }
+      }
+    ]
+  }
+}
+]
+    at Gaxios._request (/home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/gaxios/build/src/gaxios.js:142:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async OAuth2Client.requestAsync (/home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/google-auth-library/build/src/auth/oauth2client.js:429:18)
+    at async CodeAssistServer.requestStreamingPost (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/code_assist/server.js:262:21)
+    at async CodeAssistServer.generateContentStream (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/code_assist/server.js:54:27)
+    at async file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/loggingContentGenerator.js:285:26
+    at async file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/telemetry/trace.js:81:20
+    at async retryWithBackoff (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/utils/retry.js:130:28)
+    at async GeminiChat.makeApiCallAndProcessStream (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/geminiChat.js:440:32)
+    at async GeminiChat.streamWithRetries (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/geminiChat.js:266:40) {
+  config: {
+    proxy: 'http://192.168.1.8:8345',
+    url: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse',
+    method: 'POST',
+    params: { alt: 'sse' },
+    headers: {
+      'Content-Type': 'application/json',
+      'User-Agent': 'GeminiCLI/0.34.0/gemini-3-flash-preview (linux; x64) google-api-nodejs-client/9.15.1',
+      Authorization: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+      'x-goog-api-client': 'gl-node/20.18.1'
+    },
+    responseType: 'stream',
+    body: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+    signal: AbortSignal { aborted: false },
+    retry: false,
+    paramsSerializer: [Function: paramsSerializer],
+    validateStatus: [Function: validateStatus],
+    agent: HttpsProxyAgent {
+      _events: [Object: null prototype],
+      _eventsCount: 2,
+      _maxListeners: undefined,
+      options: [Object],
+      requests: [Object: null prototype] {},
+      sockets: [Object: null prototype],
+      freeSockets: [Object: null prototype] {},
+      keepAliveMsecs: 1000,
+      keepAlive: false,
+      maxSockets: Infinity,
+      maxFreeSockets: 256,
+      scheduling: 'lifo',
+      maxTotalSockets: Infinity,
+      totalSocketCount: 1,
+      proxy: URL {},
+      proxyHeaders: {},
+      connectOpts: [Object],
+      [Symbol(shapeMode)]: false,
+      [Symbol(kCapture)]: false,
+      [Symbol(AgentBaseInternalState)]: [Object]
+    },
+    errorRedactor: [Function: defaultErrorRedactor]
+  },
+  response: {
+    config: {
+      proxy: 'http://192.168.1.8:8345',
+      url: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse',
+      method: 'POST',
+      params: [Object],
+      headers: [Object],
+      responseType: 'stream',
+      body: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+      signal: [AbortSignal],
+      retry: false,
+      paramsSerializer: [Function: paramsSerializer],
+      validateStatus: [Function: validateStatus],
+      agent: [HttpsProxyAgent],
+      errorRedactor: [Function: defaultErrorRedactor]
+    },
+    data: '[{\n' +
+      '  "error": {\n' +
+      '    "code": 429,\n' +
+      '    "message": "No capacity available for model gemini-3-flash-preview on the server",\n' +
+      '    "errors": [\n' +
+      '      {\n' +
+      '        "message": "No capacity available for model gemini-3-flash-preview on the server",\n' +
+      '        "domain": "global",\n' +
+      '        "reason": "rateLimitExceeded"\n' +
+      '      }\n' +
+      '    ],\n' +
+      '    "status": "RESOURCE_EXHAUSTED",\n' +
+      '    "details": [\n' +
+      '      {\n' +
+      '        "@type": "type.googleapis.com/google.rpc.ErrorInfo",\n' +
+      '        "reason": "MODEL_CAPACITY_EXHAUSTED",\n' +
+      '        "domain": "cloudcode-pa.googleapis.com",\n' +
+      '        "metadata": {\n' +
+      '          "model": "gemini-3-flash-preview"\n' +
+      '        }\n' +
+      '      }\n' +
+      '    ]\n' +
+      '  }\n' +
+      '}\n' +
+      ']',
+    headers: {
+      'alt-svc': 'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000',
+      connection: 'close',
+      'content-length': '630',
+      'content-type': 'application/json; charset=UTF-8',
+      date: 'Fri, 20 Mar 2026 04:00:55 GMT',
+      server: 'ESF',
+      'server-timing': 'gfet4t7; dur=1720',
+      vary: 'Origin, X-Origin, Referer',
+      'x-cloudaicompanion-trace-id': '14e095d735365a11',
+      'x-content-type-options': 'nosniff',
+      'x-frame-options': 'SAMEORIGIN',
+      'x-xss-protection': '0'
+    },
+    status: 429,
+    statusText: 'Too Many Requests',
+    request: {
+      responseURL: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse'
+    }
+  },
+  error: undefined,
+  status: 429,
+  [Symbol(gaxios-gaxios-error)]: '6.7.1'
+}
+Attempt 3 failed with status 429. Retrying with backoff... GaxiosError: [{
+  "error": {
+    "code": 429,
+    "message": "No capacity available for model gemini-3-flash-preview on the server",
+    "errors": [
+      {
+        "message": "No capacity available for model gemini-3-flash-preview on the server",
+        "domain": "global",
+        "reason": "rateLimitExceeded"
+      }
+    ],
+    "status": "RESOURCE_EXHAUSTED",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+        "reason": "MODEL_CAPACITY_EXHAUSTED",
+        "domain": "cloudcode-pa.googleapis.com",
+        "metadata": {
+          "model": "gemini-3-flash-preview"
+        }
+      }
+    ]
+  }
+}
+]
+    at Gaxios._request (/home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/gaxios/build/src/gaxios.js:142:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async OAuth2Client.requestAsync (/home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/google-auth-library/build/src/auth/oauth2client.js:429:18)
+    at async CodeAssistServer.requestStreamingPost (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/code_assist/server.js:262:21)
+    at async CodeAssistServer.generateContentStream (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/code_assist/server.js:54:27)
+    at async file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/loggingContentGenerator.js:285:26
+    at async file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/telemetry/trace.js:81:20
+    at async retryWithBackoff (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/utils/retry.js:130:28)
+    at async GeminiChat.makeApiCallAndProcessStream (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/geminiChat.js:440:32)
+    at async GeminiChat.streamWithRetries (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/geminiChat.js:266:40) {
+  config: {
+    proxy: 'http://192.168.1.8:8345',
+    url: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse',
+    method: 'POST',
+    params: { alt: 'sse' },
+    headers: {
+      'Content-Type': 'application/json',
+      'User-Agent': 'GeminiCLI/0.34.0/gemini-3-flash-preview (linux; x64) google-api-nodejs-client/9.15.1',
+      Authorization: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+      'x-goog-api-client': 'gl-node/20.18.1'
+    },
+    responseType: 'stream',
+    body: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+    signal: AbortSignal { aborted: false },
+    retry: false,
+    paramsSerializer: [Function: paramsSerializer],
+    validateStatus: [Function: validateStatus],
+    agent: HttpsProxyAgent {
+      _events: [Object: null prototype],
+      _eventsCount: 2,
+      _maxListeners: undefined,
+      options: [Object],
+      requests: [Object: null prototype] {},
+      sockets: [Object: null prototype],
+      freeSockets: [Object: null prototype] {},
+      keepAliveMsecs: 1000,
+      keepAlive: false,
+      maxSockets: Infinity,
+      maxFreeSockets: 256,
+      scheduling: 'lifo',
+      maxTotalSockets: Infinity,
+      totalSocketCount: 1,
+      proxy: URL {},
+      proxyHeaders: {},
+      connectOpts: [Object],
+      [Symbol(shapeMode)]: false,
+      [Symbol(kCapture)]: false,
+      [Symbol(AgentBaseInternalState)]: [Object]
+    },
+    errorRedactor: [Function: defaultErrorRedactor]
+  },
+  response: {
+    config: {
+      proxy: 'http://192.168.1.8:8345',
+      url: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse',
+      method: 'POST',
+      params: [Object],
+      headers: [Object],
+      responseType: 'stream',
+      body: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+      signal: [AbortSignal],
+      retry: false,
+      paramsSerializer: [Function: paramsSerializer],
+      validateStatus: [Function: validateStatus],
+      agent: [HttpsProxyAgent],
+      errorRedactor: [Function: defaultErrorRedactor]
+    },
+    data: '[{\n' +
+      '  "error": {\n' +
+      '    "code": 429,\n' +
+      '    "message": "No capacity available for model gemini-3-flash-preview on the server",\n' +
+      '    "errors": [\n' +
+      '      {\n' +
+      '        "message": "No capacity available for model gemini-3-flash-preview on the server",\n' +
+      '        "domain": "global",\n' +
+      '        "reason": "rateLimitExceeded"\n' +
+      '      }\n' +
+      '    ],\n' +
+      '    "status": "RESOURCE_EXHAUSTED",\n' +
+      '    "details": [\n' +
+      '      {\n' +
+      '        "@type": "type.googleapis.com/google.rpc.ErrorInfo",\n' +
+      '        "reason": "MODEL_CAPACITY_EXHAUSTED",\n' +
+      '        "domain": "cloudcode-pa.googleapis.com",\n' +
+      '        "metadata": {\n' +
+      '          "model": "gemini-3-flash-preview"\n' +
+      '        }\n' +
+      '      }\n' +
+      '    ]\n' +
+      '  }\n' +
+      '}\n' +
+      ']',
+    headers: {
+      'alt-svc': 'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000',
+      connection: 'close',
+      'content-length': '630',
+      'content-type': 'application/json; charset=UTF-8',
+      date: 'Fri, 20 Mar 2026 04:01:07 GMT',
+      server: 'ESF',
+      'server-timing': 'gfet4t7; dur=1779',
+      vary: 'Origin, X-Origin, Referer',
+      'x-cloudaicompanion-trace-id': 'a65e618f97c38e62',
+      'x-content-type-options': 'nosniff',
+      'x-frame-options': 'SAMEORIGIN',
+      'x-xss-protection': '0'
+    },
+    status: 429,
+    statusText: 'Too Many Requests',
+    request: {
+      responseURL: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse'
+    }
+  },
+  error: undefined,
+  status: 429,
+  [Symbol(gaxios-gaxios-error)]: '6.7.1'
+}
+Attempt 1 failed: You have exhausted your capacity on this model. Your quota will reset after 5s.. Retrying after 6487ms...
+Attempt 2 failed with status 429. Retrying with backoff... GaxiosError: [{
+  "error": {
+    "code": 429,
+    "message": "No capacity available for model gemini-3-flash-preview on the server",
+    "errors": [
+      {
+        "message": "No capacity available for model gemini-3-flash-preview on the server",
+        "domain": "global",
+        "reason": "rateLimitExceeded"
+      }
+    ],
+    "status": "RESOURCE_EXHAUSTED",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+        "reason": "MODEL_CAPACITY_EXHAUSTED",
+        "domain": "cloudcode-pa.googleapis.com",
+        "metadata": {
+          "model": "gemini-3-flash-preview"
+        }
+      }
+    ]
+  }
+}
+]
+    at Gaxios._request (/home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/gaxios/build/src/gaxios.js:142:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async OAuth2Client.requestAsync (/home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/google-auth-library/build/src/auth/oauth2client.js:429:18)
+    at async CodeAssistServer.requestStreamingPost (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/code_assist/server.js:262:21)
+    at async CodeAssistServer.generateContentStream (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/code_assist/server.js:54:27)
+    at async file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/loggingContentGenerator.js:285:26
+    at async file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/telemetry/trace.js:81:20
+    at async retryWithBackoff (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/utils/retry.js:130:28)
+    at async GeminiChat.makeApiCallAndProcessStream (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/geminiChat.js:440:32)
+    at async GeminiChat.streamWithRetries (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/geminiChat.js:266:40) {
+  config: {
+    proxy: 'http://192.168.1.8:8345',
+    url: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse',
+    method: 'POST',
+    params: { alt: 'sse' },
+    headers: {
+      'Content-Type': 'application/json',
+      'User-Agent': 'GeminiCLI/0.34.0/gemini-3-flash-preview (linux; x64) google-api-nodejs-client/9.15.1',
+      Authorization: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+      'x-goog-api-client': 'gl-node/20.18.1'
+    },
+    responseType: 'stream',
+    body: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+    signal: AbortSignal { aborted: false },
+    retry: false,
+    paramsSerializer: [Function: paramsSerializer],
+    validateStatus: [Function: validateStatus],
+    agent: HttpsProxyAgent {
+      _events: [Object: null prototype],
+      _eventsCount: 2,
+      _maxListeners: undefined,
+      options: [Object],
+      requests: [Object: null prototype] {},
+      sockets: [Object: null prototype],
+      freeSockets: [Object: null prototype] {},
+      keepAliveMsecs: 1000,
+      keepAlive: false,
+      maxSockets: Infinity,
+      maxFreeSockets: 256,
+      scheduling: 'lifo',
+      maxTotalSockets: Infinity,
+      totalSocketCount: 1,
+      proxy: URL {},
+      proxyHeaders: {},
+      connectOpts: [Object],
+      [Symbol(shapeMode)]: false,
+      [Symbol(kCapture)]: false,
+      [Symbol(AgentBaseInternalState)]: [Object]
+    },
+    errorRedactor: [Function: defaultErrorRedactor]
+  },
+  response: {
+    config: {
+      proxy: 'http://192.168.1.8:8345',
+      url: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse',
+      method: 'POST',
+      params: [Object],
+      headers: [Object],
+      responseType: 'stream',
+      body: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+      signal: [AbortSignal],
+      retry: false,
+      paramsSerializer: [Function: paramsSerializer],
+      validateStatus: [Function: validateStatus],
+      agent: [HttpsProxyAgent],
+      errorRedactor: [Function: defaultErrorRedactor]
+    },
+    data: '[{\n' +
+      '  "error": {\n' +
+      '    "code": 429,\n' +
+      '    "message": "No capacity available for model gemini-3-flash-preview on the server",\n' +
+      '    "errors": [\n' +
+      '      {\n' +
+      '        "message": "No capacity available for model gemini-3-flash-preview on the server",\n' +
+      '        "domain": "global",\n' +
+      '        "reason": "rateLimitExceeded"\n' +
+      '      }\n' +
+      '    ],\n' +
+      '    "status": "RESOURCE_EXHAUSTED",\n' +
+      '    "details": [\n' +
+      '      {\n' +
+      '        "@type": "type.googleapis.com/google.rpc.ErrorInfo",\n' +
+      '        "reason": "MODEL_CAPACITY_EXHAUSTED",\n' +
+      '        "domain": "cloudcode-pa.googleapis.com",\n' +
+      '        "metadata": {\n' +
+      '          "model": "gemini-3-flash-preview"\n' +
+      '        }\n' +
+      '      }\n' +
+      '    ]\n' +
+      '  }\n' +
+      '}\n' +
+      ']',
+    headers: {
+      'alt-svc': 'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000',
+      connection: 'close',
+      'content-length': '630',
+      'content-type': 'application/json; charset=UTF-8',
+      date: 'Fri, 20 Mar 2026 04:01:57 GMT',
+      server: 'ESF',
+      'server-timing': 'gfet4t7; dur=1691',
+      vary: 'Origin, X-Origin, Referer',
+      'x-cloudaicompanion-trace-id': '86149ea0ffe55695',
+      'x-content-type-options': 'nosniff',
+      'x-frame-options': 'SAMEORIGIN',
+      'x-xss-protection': '0'
+    },
+    status: 429,
+    statusText: 'Too Many Requests',
+    request: {
+      responseURL: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse'
+    }
+  },
+  error: undefined,
+  status: 429,
+  [Symbol(gaxios-gaxios-error)]: '6.7.1'
+}
+Attempt 3 failed with status 429. Retrying with backoff... GaxiosError: [{
+  "error": {
+    "code": 429,
+    "message": "No capacity available for model gemini-3-flash-preview on the server",
+    "errors": [
+      {
+        "message": "No capacity available for model gemini-3-flash-preview on the server",
+        "domain": "global",
+        "reason": "rateLimitExceeded"
+      }
+    ],
+    "status": "RESOURCE_EXHAUSTED",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+        "reason": "MODEL_CAPACITY_EXHAUSTED",
+        "domain": "cloudcode-pa.googleapis.com",
+        "metadata": {
+          "model": "gemini-3-flash-preview"
+        }
+      }
+    ]
+  }
+}
+]
+    at Gaxios._request (/home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/gaxios/build/src/gaxios.js:142:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async OAuth2Client.requestAsync (/home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/google-auth-library/build/src/auth/oauth2client.js:429:18)
+    at async CodeAssistServer.requestStreamingPost (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/code_assist/server.js:262:21)
+    at async CodeAssistServer.generateContentStream (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/code_assist/server.js:54:27)
+    at async file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/loggingContentGenerator.js:285:26
+    at async file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/telemetry/trace.js:81:20
+    at async retryWithBackoff (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/utils/retry.js:130:28)
+    at async GeminiChat.makeApiCallAndProcessStream (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/geminiChat.js:440:32)
+    at async GeminiChat.streamWithRetries (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/geminiChat.js:266:40) {
+  config: {
+    proxy: 'http://192.168.1.8:8345',
+    url: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse',
+    method: 'POST',
+    params: { alt: 'sse' },
+    headers: {
+      'Content-Type': 'application/json',
+      'User-Agent': 'GeminiCLI/0.34.0/gemini-3-flash-preview (linux; x64) google-api-nodejs-client/9.15.1',
+      Authorization: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+      'x-goog-api-client': 'gl-node/20.18.1'
+    },
+    responseType: 'stream',
+    body: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+    signal: AbortSignal { aborted: false },
+    retry: false,
+    paramsSerializer: [Function: paramsSerializer],
+    validateStatus: [Function: validateStatus],
+    agent: HttpsProxyAgent {
+      _events: [Object: null prototype],
+      _eventsCount: 2,
+      _maxListeners: undefined,
+      options: [Object],
+      requests: [Object: null prototype] {},
+      sockets: [Object: null prototype],
+      freeSockets: [Object: null prototype] {},
+      keepAliveMsecs: 1000,
+      keepAlive: false,
+      maxSockets: Infinity,
+      maxFreeSockets: 256,
+      scheduling: 'lifo',
+      maxTotalSockets: Infinity,
+      totalSocketCount: 1,
+      proxy: URL {},
+      proxyHeaders: {},
+      connectOpts: [Object],
+      [Symbol(shapeMode)]: false,
+      [Symbol(kCapture)]: false,
+      [Symbol(AgentBaseInternalState)]: [Object]
+    },
+    errorRedactor: [Function: defaultErrorRedactor]
+  },
+  response: {
+    config: {
+      proxy: 'http://192.168.1.8:8345',
+      url: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse',
+      method: 'POST',
+      params: [Object],
+      headers: [Object],
+      responseType: 'stream',
+      body: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+      signal: [AbortSignal],
+      retry: false,
+      paramsSerializer: [Function: paramsSerializer],
+      validateStatus: [Function: validateStatus],
+      agent: [HttpsProxyAgent],
+      errorRedactor: [Function: defaultErrorRedactor]
+    },
+    data: '[{\n' +
+      '  "error": {\n' +
+      '    "code": 429,\n' +
+      '    "message": "No capacity available for model gemini-3-flash-preview on the server",\n' +
+      '    "errors": [\n' +
+      '      {\n' +
+      '        "message": "No capacity available for model gemini-3-flash-preview on the server",\n' +
+      '        "domain": "global",\n' +
+      '        "reason": "rateLimitExceeded"\n' +
+      '      }\n' +
+      '    ],\n' +
+      '    "status": "RESOURCE_EXHAUSTED",\n' +
+      '    "details": [\n' +
+      '      {\n' +
+      '        "@type": "type.googleapis.com/google.rpc.ErrorInfo",\n' +
+      '        "reason": "MODEL_CAPACITY_EXHAUSTED",\n' +
+      '        "domain": "cloudcode-pa.googleapis.com",\n' +
+      '        "metadata": {\n' +
+      '          "model": "gemini-3-flash-preview"\n' +
+      '        }\n' +
+      '      }\n' +
+      '    ]\n' +
+      '  }\n' +
+      '}\n' +
+      ']',
+    headers: {
+      'alt-svc': 'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000',
+      connection: 'close',
+      'content-length': '630',
+      'content-type': 'application/json; charset=UTF-8',
+      date: 'Fri, 20 Mar 2026 04:02:11 GMT',
+      server: 'ESF',
+      'server-timing': 'gfet4t7; dur=1671',
+      vary: 'Origin, X-Origin, Referer',
+      'x-cloudaicompanion-trace-id': '9cae024f3ca34ef0',
+      'x-content-type-options': 'nosniff',
+      'x-frame-options': 'SAMEORIGIN',
+      'x-xss-protection': '0'
+    },
+    status: 429,
+    statusText: 'Too Many Requests',
+    request: {
+      responseURL: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse'
+    }
+  },
+  error: undefined,
+  status: 429,
+  [Symbol(gaxios-gaxios-error)]: '6.7.1'
+}
+Attempt 1 failed with status 429. Retrying with backoff... GaxiosError: [{
+  "error": {
+    "code": 429,
+    "message": "No capacity available for model gemini-3-flash-preview on the server",
+    "errors": [
+      {
+        "message": "No capacity available for model gemini-3-flash-preview on the server",
+        "domain": "global",
+        "reason": "rateLimitExceeded"
+      }
+    ],
+    "status": "RESOURCE_EXHAUSTED",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+        "reason": "MODEL_CAPACITY_EXHAUSTED",
+        "domain": "cloudcode-pa.googleapis.com",
+        "metadata": {
+          "model": "gemini-3-flash-preview"
+        }
+      }
+    ]
+  }
+}
+]
+    at Gaxios._request (/home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/gaxios/build/src/gaxios.js:142:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async OAuth2Client.requestAsync (/home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/google-auth-library/build/src/auth/oauth2client.js:429:18)
+    at async CodeAssistServer.requestStreamingPost (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/code_assist/server.js:262:21)
+    at async CodeAssistServer.generateContentStream (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/code_assist/server.js:54:27)
+    at async file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/loggingContentGenerator.js:285:26
+    at async file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/telemetry/trace.js:81:20
+    at async retryWithBackoff (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/utils/retry.js:130:28)
+    at async GeminiChat.makeApiCallAndProcessStream (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/geminiChat.js:440:32)
+    at async GeminiChat.streamWithRetries (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/geminiChat.js:266:40) {
+  config: {
+    proxy: 'http://192.168.1.8:8345',
+    url: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse',
+    method: 'POST',
+    params: { alt: 'sse' },
+    headers: {
+      'Content-Type': 'application/json',
+      'User-Agent': 'GeminiCLI/0.34.0/gemini-3-flash-preview (linux; x64) google-api-nodejs-client/9.15.1',
+      Authorization: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+      'x-goog-api-client': 'gl-node/20.18.1'
+    },
+    responseType: 'stream',
+    body: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+    signal: AbortSignal { aborted: false },
+    retry: false,
+    paramsSerializer: [Function: paramsSerializer],
+    validateStatus: [Function: validateStatus],
+    agent: HttpsProxyAgent {
+      _events: [Object: null prototype],
+      _eventsCount: 2,
+      _maxListeners: undefined,
+      options: [Object],
+      requests: [Object: null prototype] {},
+      sockets: [Object: null prototype],
+      freeSockets: [Object: null prototype] {},
+      keepAliveMsecs: 1000,
+      keepAlive: false,
+      maxSockets: Infinity,
+      maxFreeSockets: 256,
+      scheduling: 'lifo',
+      maxTotalSockets: Infinity,
+      totalSocketCount: 1,
+      proxy: URL {},
+      proxyHeaders: {},
+      connectOpts: [Object],
+      [Symbol(shapeMode)]: false,
+      [Symbol(kCapture)]: false,
+      [Symbol(AgentBaseInternalState)]: [Object]
+    },
+    errorRedactor: [Function: defaultErrorRedactor]
+  },
+  response: {
+    config: {
+      proxy: 'http://192.168.1.8:8345',
+      url: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse',
+      method: 'POST',
+      params: [Object],
+      headers: [Object],
+      responseType: 'stream',
+      body: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+      signal: [AbortSignal],
+      retry: false,
+      paramsSerializer: [Function: paramsSerializer],
+      validateStatus: [Function: validateStatus],
+      agent: [HttpsProxyAgent],
+      errorRedactor: [Function: defaultErrorRedactor]
+    },
+    data: '[{\n' +
+      '  "error": {\n' +
+      '    "code": 429,\n' +
+      '    "message": "No capacity available for model gemini-3-flash-preview on the server",\n' +
+      '    "errors": [\n' +
+      '      {\n' +
+      '        "message": "No capacity available for model gemini-3-flash-preview on the server",\n' +
+      '        "domain": "global",\n' +
+      '        "reason": "rateLimitExceeded"\n' +
+      '      }\n' +
+      '    ],\n' +
+      '    "status": "RESOURCE_EXHAUSTED",\n' +
+      '    "details": [\n' +
+      '      {\n' +
+      '        "@type": "type.googleapis.com/google.rpc.ErrorInfo",\n' +
+      '        "reason": "MODEL_CAPACITY_EXHAUSTED",\n' +
+      '        "domain": "cloudcode-pa.googleapis.com",\n' +
+      '        "metadata": {\n' +
+      '          "model": "gemini-3-flash-preview"\n' +
+      '        }\n' +
+      '      }\n' +
+      '    ]\n' +
+      '  }\n' +
+      '}\n' +
+      ']',
+    headers: {
+      'alt-svc': 'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000',
+      connection: 'close',
+      'content-length': '630',
+      'content-type': 'application/json; charset=UTF-8',
+      date: 'Fri, 20 Mar 2026 04:03:48 GMT',
+      server: 'ESF',
+      'server-timing': 'gfet4t7; dur=1759',
+      vary: 'Origin, X-Origin, Referer',
+      'x-cloudaicompanion-trace-id': 'b5c13943943a60d3',
+      'x-content-type-options': 'nosniff',
+      'x-frame-options': 'SAMEORIGIN',
+      'x-xss-protection': '0'
+    },
+    status: 429,
+    statusText: 'Too Many Requests',
+    request: {
+      responseURL: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse'
+    }
+  },
+  error: undefined,
+  status: 429,
+  [Symbol(gaxios-gaxios-error)]: '6.7.1'
+}
+
+
+
+Duration: 228.56 seconds
+Exit code: 0
+============================================================
+      Solver completed in 228.56s
+[3/5] Preparing validation environment...
+[4/5] Running validation...
+      Loaded
+      Running validation in: /tmp/gamedevbench_validation_f14a1938 (headless mode)
+Validation result saved to: /home/seele003/TTS/gamedevbench-bp-old/results/task_task_0066.json
+[5/5] Saving results...
+✓ Benchmark cycle completed for task_0066
+  Results saved to: tasks/test_result/task_0066_gemini-cli_20260320_040414
+  Cleaned up sandbox: /tmp/gamedevbench_sandbox_09944d65
+  Cleaned up validation dir: /tmp/gamedevbench_validation_f14a1938
+Progress saved to: /home/seele003/TTS/gamedevbench-bp-old/results/progress_gemini-cli_gemini-3-flash-preview.json
+Running benchmark for task: task_0109
+[1/5] Creating isolated sandbox environment...
+      Creating sandbox at: /tmp/gamedevbench_sandbox_86d6db91
+[1.5/5] Loading sandbox in editor to import assets...
+      Assets loaded and imported
+[2/5] Solving task with gemini-cli (model: gemini-3-flash-preview): task_0109
+      Working directory: /tmp/gamedevbench_sandbox_86d6db91
+============================================================
+SENDING PROMPT TO GEMINI CLI:
+============================================================
+In the Player scene, add three AnimationPlayer animations named hurt, fall, and grounded. Set hurt to 0.3s with 0.1s steps, keyframe CharacterSprite and KnifeSprite to frames 70, 71, and 72, and add a method track on the Player (path ".") that calls on_action_complete at 0.3s. Set fall to a looping 0.1s animation with CharacterSprite and KnifeSprite on frame 80. Set grounded to a looping 0.1s animation with CharacterSprite and KnifeSprite on frame 82.
+ You must complete the full task without any further assistance.
+ Godot is installed and you can run godot using the `godot` command. It is recommended to run this with a timeout (e.g., `timeout 10 godot` for 10 second timeout) to prevent hanging.You are a visual agent and can use images and videos to help you understand the state of the game.
+============================================================
+
+Running: gemini --yolo --model -p "..."
+
+GEMINI TRAJECTORY:
+============================================================
+{"type":"init","timestamp":"2026-03-20T04:04:27.197Z","session_id":"d068b5ca-b14c-4ca2-bea5-8541976f6956","model":"gemini-3-flash-preview"}
+{"type":"message","timestamp":"2026-03-20T04:04:27.199Z","role":"user","content":"In the Player scene, add three AnimationPlayer animations named hurt, fall, and grounded. Set hurt to 0.3s with 0.1s steps, keyframe CharacterSprite and KnifeSprite to frames 70, 71, and 72, and add a method track on the Player (path \".\") that calls on_action_complete at 0.3s. Set fall to a looping 0.1s animation with CharacterSprite and KnifeSprite on frame 80. Set grounded to a looping 0.1s animation with CharacterSprite and KnifeSprite on frame 82.\n You must complete the full task without any further assistance.\n Godot is installed and you can run godot using the `godot` command. It is recommended to run this with a timeout (e.g., `timeout 10 godot` for 10 second timeout) to prevent hanging.You are a visual agent and can use images and videos to help you understand the state of the game."}
+{"type":"message","timestamp":"2026-03-20T04:04:33.531Z","role":"assistant","content":"I will start by listing the contents of the `scenes` directory to confirm if there is a separate Player scene or if it's integrated into ","delta":true}
+{"type":"message","timestamp":"2026-03-20T04:04:33.571Z","role":"assistant","content":"`main.tscn`.","delta":true}
+{"type":"tool_use","timestamp":"2026-03-20T04:04:33.603Z","tool_name":"list_directory","tool_id":"list_directory_1773979473603_0","parameters":{"dir_path":"scenes"}}
+{"type":"tool_result","timestamp":"2026-03-20T04:04:33.628Z","tool_id":"list_directory_1773979473603_0","status":"success","output":"Listed 1 item(s)."}
+{"type":"message","timestamp":"2026-03-20T04:04:41.834Z","role":"assistant","content":"I will read `scenes/","delta":true}
+{"type":"message","timestamp":"2026-03-20T04:04:41.854Z","role":"assistant","content":"main.tscn` to identify the Player node, its sprites, and the `AnimationPlayer`.","delta":true}
+{"type":"tool_use","timestamp":"2026-03-20T04:04:41.917Z","tool_name":"read_file","tool_id":"read_file_1773979481917_0","parameters":{"file_path":"scenes/main.tscn"}}
+{"type":"tool_result","timestamp":"2026-03-20T04:04:41.954Z","tool_id":"read_file_1773979481917_0","status":"success","output":""}
+{"type":"message","timestamp":"2026-03-20T04:04:54.324Z","role":"assistant","content":"I will read `scripts/player.gd` to check if `on_action_complete` is already defined.","delta":true}
+{"type":"tool_use","timestamp":"2026-03-20T04:04:54.396Z","tool_name":"read_file","tool_id":"read_file_1773979494396_0","parameters":{"file_path":"scripts/player.gd"}}
+{"type":"tool_result","timestamp":"2026-03-20T04:04:54.455Z","tool_id":"read_file_1773979494396_0","status":"success","output":""}
+{"type":"message","timestamp":"2026-03-20T04:05:32.799Z","role":"assistant","content":"I will now update `scenes/main.tscn` with the new `hurt`, `fall`, and `grounded` animations, ensuring the `AnimationLibrary` and `load_steps` are correctly updated.","delta":true}
+{"type":"tool_use","timestamp":"2026-03-20T04:05:33.105Z","tool_name":"write_file","tool_id":"write_file_1773979533105_0","parameters":{"file_path":"scenes/main.tscn","content":"[gd_scene load_steps=9 format=3 uid=\"uid://d3y0a3x1f2qyh\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/sprites/player.png\" id=\"1_cw0n4\"]\n[ext_resource type=\"Texture2D\" path=\"res://assets/sprites/player_knife.png\" id=\"2_f5k0t\"]\n[ext_resource type=\"Script\" path=\"res://scripts/player.gd\" id=\"3_b7n4u\"]\n\n[sub_resource type=\"Animation\" id=\"Animation_reset\"]\nlength = 0.001\ntracks/0/type = \"value\"\ntracks/0/imported = false\ntracks/0/enabled = true\ntracks/0/path = NodePath(\"CharacterSprite:frame\")\ntracks/0/interp = 1\ntracks/0/loop_wrap = true\ntracks/0/keys = {\n\"times\": PackedFloat32Array(0),\n\"transitions\": PackedFloat32Array(1),\n\"update\": 1,\n\"values\": [0]\n}\ntracks/1/type = \"value\"\ntracks/1/imported = false\ntracks/1/enabled = true\ntracks/1/path = NodePath(\"KnifeSprite:frame\")\ntracks/1/interp = 1\ntracks/1/loop_wrap = true\ntracks/1/keys = {\n\"times\": PackedFloat32Array(0),\n\"transitions\": PackedFloat32Array(1),\n\"update\": 1,\n\"values\": [0]\n}\n\n[sub_resource type=\"Animation\" id=\"Animation_hurt\"]\nresource_name = \"hurt\"\nlength = 0.3\nstep = 0.1\ntracks/0/type = \"value\"\ntracks/0/imported = false\ntracks/0/enabled = true\ntracks/0/path = NodePath(\"CharacterSprite:frame\")\ntracks/0/interp = 1\ntracks/0/loop_wrap = true\ntracks/0/keys = {\n\"times\": PackedFloat32Array(0, 0.1, 0.2),\n\"transitions\": PackedFloat32Array(1, 1, 1),\n\"update\": 1,\n\"values\": [70, 71, 72]\n}\ntracks/1/type = \"value\"\ntracks/1/imported = false\ntracks/1/enabled = true\ntracks/1/path = NodePath(\"KnifeSprite:frame\")\ntracks/1/interp = 1\ntracks/1/loop_wrap = true\ntracks/1/keys = {\n\"times\": PackedFloat32Array(0, 0.1, 0.2),\n\"transitions\": PackedFloat32Array(1, 1, 1),\n\"update\": 1,\n\"values\": [70, 71, 72]\n}\ntracks/2/type = \"method\"\ntracks/2/imported = false\ntracks/2/enabled = true\ntracks/2/path = NodePath(\".\")\ntracks/2/interp = 1\ntracks/2/loop_wrap = true\ntracks/2/keys = {\n\"times\": PackedFloat32Array(0.3),\n\"transitions\": PackedFloat32Array(1),\n\"values\": [{\n\"args\": [],\n\"method\": &\"on_action_complete\"\n}]\n}\n\n[sub_resource type=\"Animation\" id=\"Animation_fall\"]\nresource_name = \"fall\"\nlength = 0.1\nloop_mode = 1\ntracks/0/type = \"value\"\ntracks/0/imported = false\ntracks/0/enabled = true\ntracks/0/path = NodePath(\"CharacterSprite:frame\")\ntracks/0/interp = 1\ntracks/0/loop_wrap = true\ntracks/0/keys = {\n\"times\": PackedFloat32Array(0),\n\"transitions\": PackedFloat32Array(1),\n\"update\": 1,\n\"values\": [80]\n}\ntracks/1/type = \"value\"\ntracks/1/imported = false\ntracks/1/enabled = true\ntracks/1/path = NodePath(\"KnifeSprite:frame\")\ntracks/1/interp = 1\ntracks/1/loop_wrap = true\ntracks/1/keys = {\n\"times\": PackedFloat32Array(0),\n\"transitions\": PackedFloat32Array(1),\n\"update\": 1,\n\"values\": [80]\n}\n\n[sub_resource type=\"Animation\" id=\"Animation_grounded\"]\nresource_name = \"grounded\"\nlength = 0.1\nloop_mode = 1\ntracks/0/type = \"value\"\ntracks/0/imported = false\ntracks/0/enabled = true\ntracks/0/path = NodePath(\"CharacterSprite:frame\")\ntracks/0/interp = 1\ntracks/0/loop_wrap = true\ntracks/0/keys = {\n\"times\": PackedFloat32Array(0),\n\"transitions\": PackedFloat32Array(1),\n\"update\": 1,\n\"values\": [82]\n}\ntracks/1/type = \"value\"\ntracks/1/imported = false\ntracks/1/enabled = true\ntracks/1/path = NodePath(\"KnifeSprite:frame\")\ntracks/1/interp = 1\ntracks/1/loop_wrap = true\ntracks/1/keys = {\n\"times\": PackedFloat32Array(0),\n\"transitions\": PackedFloat32Array(1),\n\"update\": 1,\n\"values\": [82]\n}\n\n[sub_resource type=\"AnimationLibrary\" id=\"AnimationLibrary_1a2y2\"]\n_data = {\n\"RESET\": SubResource(\"Animation_reset\"),\n\"fall\": SubResource(\"Animation_fall\"),\n\"grounded\": SubResource(\"Animation_grounded\"),\n\"hurt\": SubResource(\"Animation_hurt\")\n}\n\n[node name=\"Main\" type=\"Node2D\"]\n\n[node name=\"Player\" type=\"CharacterBody2D\" parent=\".\"]\nscript = ExtResource(\"3_b7n4u\")\n\n[node name=\"CharacterSprite\" type=\"Sprite2D\" parent=\"Player\"]\ntexture = ExtResource(\"1_cw0n4\")\ncentered = false\noffset = Vector2(-24, -48)\nhframes = 10\nvframes = 10\n\n[node name=\"KnifeSprite\" type=\"Sprite2D\" parent=\"Player\"]\ntexture = ExtResource(\"2_f5k0t\")\ncentered = false\noffset = Vector2(-24, -48)\nhframes = 10\nvframes = 10\n\n[node name=\"AnimationPlayer\" type=\"AnimationPlayer\" parent=\"Player\"]\nlibraries = {\n\"\": SubResource(\"AnimationLibrary_1a2y2\")\n}\n"}}
+{"type":"tool_result","timestamp":"2026-03-20T04:05:33.137Z","tool_id":"write_file_1773979533105_0","status":"success"}
+{"type":"message","timestamp":"2026-03-20T04:05:41.107Z","role":"assistant","content":"I will create a verification script to ensure the animations are correctly loaded and have the expected properties.","delta":true}
+{"type":"tool_use","timestamp":"2026-03-20T04:05:41.395Z","tool_name":"write_file","tool_id":"write_file_1773979541395_0","parameters":{"content":"extends SceneTree\n\nfunc _init():\n\tvar scene = load(\"res://scenes/main.tscn\").instantiate()\n\tvar player = scene.get_node(\"Player\")\n\tvar anim_player = player.get_node(\"AnimationPlayer\")\n\t\n\tvar anims = [\"hurt\", \"fall\", \"grounded\"]\n\tfor anim_name in anims:\n\t\tif not anim_player.has_animation(anim_name):\n\t\t\tprint(\"Error: Missing animation \", anim_name)\n\t\t\tquit(1)\n\t\t\treturn\n\t\t\n\t\tvar anim = anim_player.get_animation(anim_name)\n\t\tprint(\"Animation: \", anim_name, \" Length: \", anim.length, \" Loop: \", anim.loop_mode)\n\t\t\n\t\tfor i in range(anim.get_track_count()):\n\t\t\tvar path = anim.track_get_path(i)\n\t\t\tprint(\"  Track \", i, \": \", path, \" Type: \", anim.track_get_type(i))\n\t\t\tfor j in range(anim.track_get_key_count(i)):\n\t\t\t\tprint(\"    Key \", j, \" Time: \", anim.track_get_key_time(i, j), \" Value: \", anim.track_get_key_value(i, j))\n\n\tquit(0)\n","file_path":"verify_anims.gd"}}
+{"type":"tool_result","timestamp":"2026-03-20T04:05:41.408Z","tool_id":"write_file_1773979541395_0","status":"success"}
+{"type":"message","timestamp":"2026-03-20T04:06:27.416Z","role":"assistant","content":"I will run the verification script with God","delta":true}
+{"type":"message","timestamp":"2026-03-20T04:06:27.441Z","role":"assistant","content":"ot to confirm that the animations are correctly loaded and have the expected properties.","delta":true}
+{"type":"tool_use","timestamp":"2026-03-20T04:06:27.482Z","tool_name":"run_shell_command","tool_id":"run_shell_command_1773979587482_0","parameters":{"command":"timeout 10 godot -s verify_anims.gd --headless"}}
+{"type":"tool_result","timestamp":"2026-03-20T04:06:27.732Z","tool_id":"run_shell_command_1773979587482_0","status":"success","output":"Godot Engine v4.6.1.stable.official.14d19694e - https://godotengine.org\n\nAnimation: hurt Length: 0.30000001192093 Loop: 0\n  Track 0: CharacterSprite:frame Type: 0\n    Key 0 Time: 0.0 Value: 70\n    Key 1 Time: 0.10000000149012 Value: 71\n    Key 2 Time: 0.20000000298023 Value: 72\n  Track 1: KnifeSprite:frame Type: 0\n    Key 0 Time: 0.0 Value: 70\n    Key 1 Time: 0.10000000149012 Value: 71\n    Key 2 Time: 0.20000000298023 Value: 72\n  Track 2: . Type: 5\n    Key 0 Time: 0.30000001192093 Value: { \"method\": &\"on_action_complete\", \"args\": [] }\nAnimation: fall Length: 0.10000000149012 Loop: 1\n  Track 0: CharacterSprite:frame Type: 0\n    Key 0 Time: 0.0 Value: 80\n  Track 1: KnifeSprite:frame Type: 0\n    Key 0 Time: 0.0 Value: 80\nAnimation: grounded Length: 0.10000000149012 Loop: 1\n  Track 0: CharacterSprite:frame Type: 0\n    Key 0 Time: 0.0 Value: 82\n  Track 1: KnifeSprite:frame Type: 0\n    Key 0 Time: 0.0 Value: 82\nERROR: 1 RID allocations of type 'P11GodotBody2D' were leaked at exit.\nWARNING: 4 RIDs of type \"CanvasItem\" were leaked.\n     at: _free_rids (servers/rendering/renderer_canvas_cull.cpp:2692)\nERROR: 2 RID allocations of type 'PN13RendererDummy14TextureStorage12DummyTextureE' were leaked at exit.\nWARNING: ObjectDB instances leaked at exit (run with --verbose for details).\n     at: cleanup (core/object/object.cpp:2641)\nERROR: 8 resources still in use at exit (run with --verbose for details).\n   at: clear (core/io/resource.cpp:810)"}
+{"type":"message","timestamp":"2026-03-20T04:06:45.512Z","role":"assistant","content":"I will update the verification script to check the `step","delta":true}
+{"type":"message","timestamp":"2026-03-20T04:06:45.535Z","role":"assistant","content":"` property of the `hurt` animation and confirm it matches the requirement.","delta":true}
+{"type":"tool_use","timestamp":"2026-03-20T04:06:45.912Z","tool_name":"replace","tool_id":"replace_1773979605912_0","parameters":{"instruction":"Add print for step property of animation.","file_path":"verify_anims.gd","old_string":"\t\tprint(\"Animation: \", anim_name, \" Length: \", anim.length, \" Loop: \", anim.loop_mode)\n","new_string":"\t\tprint(\"Animation: \", anim_name, \" Length: \", anim.length, \" Loop: \", anim.loop_mode, \" Step: \", anim.step)\n"}}
+{"type":"tool_result","timestamp":"2026-03-20T04:06:45.928Z","tool_id":"replace_1773979605912_0","status":"success"}
+{"type":"message","timestamp":"2026-03-20T04:08:21.145Z","role":"assistant","content":"I will run the updated verification script with Godot to","delta":true}
+{"type":"message","timestamp":"2026-03-20T04:08:21.243Z","role":"assistant","content":" confirm that the `step` property of the `hurt` animation is correctly set","delta":true}
+{"type":"message","timestamp":"2026-03-20T04:08:21.243Z","role":"assistant","content":" to 0.1s.","delta":true}
+{"type":"tool_use","timestamp":"2026-03-20T04:08:21.299Z","tool_name":"run_shell_command","tool_id":"run_shell_command_1773979701299_0","parameters":{"command":"timeout 10 godot -s verify_anims.gd --headless"}}
+{"type":"tool_result","timestamp":"2026-03-20T04:08:21.521Z","tool_id":"run_shell_command_1773979701299_0","status":"success","output":"Godot Engine v4.6.1.stable.official.14d19694e - https://godotengine.org\n\nAnimation: hurt Length: 0.30000001192093 Loop: 0 Step: 0.10000000149012\n  Track 0: CharacterSprite:frame Type: 0\n    Key 0 Time: 0.0 Value: 70\n    Key 1 Time: 0.10000000149012 Value: 71\n    Key 2 Time: 0.20000000298023 Value: 72\n  Track 1: KnifeSprite:frame Type: 0\n    Key 0 Time: 0.0 Value: 70\n    Key 1 Time: 0.10000000149012 Value: 71\n    Key 2 Time: 0.20000000298023 Value: 72\n  Track 2: . Type: 5\n    Key 0 Time: 0.30000001192093 Value: { \"method\": &\"on_action_complete\", \"args\": [] }\nAnimation: fall Length: 0.10000000149012 Loop: 1 Step: 0.0333333350718\n  Track 0: CharacterSprite:frame Type: 0\n    Key 0 Time: 0.0 Value: 80\n  Track 1: KnifeSprite:frame Type: 0\n    Key 0 Time: 0.0 Value: 80\nAnimation: grounded Length: 0.10000000149012 Loop: 1 Step: 0.0333333350718\n  Track 0: CharacterSprite:frame Type: 0\n    Key 0 Time: 0.0 Value: 82\n  Track 1: KnifeSprite:frame Type: 0\n    Key 0 Time: 0.0 Value: 82\nERROR: 1 RID allocations of type 'P11GodotBody2D' were leaked at exit.\nWARNING: 4 RIDs of type \"CanvasItem\" were leaked.\n     at: _free_rids (servers/rendering/renderer_canvas_cull.cpp:2692)\nERROR: 2 RID allocations of type 'PN13RendererDummy14TextureStorage12DummyTextureE' were leaked at exit.\nWARNING: ObjectDB instances leaked at exit (run with --verbose for details).\n     at: cleanup (core/object/object.cpp:2641)\nERROR: 8 resources still in use at exit (run with --verbose for details).\n   at: clear (core/io/resource.cpp:810)"}
+{"type":"message","timestamp":"2026-03-20T04:08:25.364Z","role":"assistant","content":"I have successfully verified that all animations meet the requirements. Now, I will remove the `verify_anims.gd` script and complete the task.","delta":true}
+{"type":"tool_use","timestamp":"2026-03-20T04:08:25.386Z","tool_name":"run_shell_command","tool_id":"run_shell_command_1773979705386_0","parameters":{"command":"rm verify_anims.gd"}}
+{"type":"tool_result","timestamp":"2026-03-20T04:08:25.439Z","tool_id":"run_shell_command_1773979705386_0","status":"success","output":""}
+{"type":"message","timestamp":"2026-03-20T04:08:52.575Z","role":"assistant","content":"I have completed the task and verified that all animations meet the","delta":true}
+{"type":"message","timestamp":"2026-03-20T04:08:52.679Z","role":"assistant","content":" specified requirements, including lengths, steps, keyframes, and the method track.\nThe `hurt` animation is 0.3s with 0.1s steps, keyframing `CharacterSprite` and `KnifeSprite` to frames 70, 71, and 72, and calling","delta":true}
+{"type":"message","timestamp":"2026-03-20T04:08:52.703Z","role":"assistant","content":" `on_action_complete` at 0.3s.\nThe `fall` and `grounded` animations are looping 0.1s animations keyframed to frames 80 and 82 respectively.","delta":true}
+{"type":"result","timestamp":"2026-03-20T04:08:52.713Z","status":"success","stats":{"total_tokens":105030,"input_tokens":97900,"output_tokens":2511,"cached":62060,"input":35840,"duration_ms":265517,"tool_calls":9,"models":{"gemini-3-flash-preview":{"total_tokens":105030,"input_tokens":97900,"output_tokens":2511,"cached":62060,"input":35840}}}}
+
+
+Stderr: YOLO mode is enabled. All tool calls will be automatically approved.
+Keychain initialization encountered an error: libsecret-1.so.0: cannot open shared object file: No such file or directory
+Using FileKeychain fallback for secure storage.
+Loaded cached credentials.
+YOLO mode is enabled. All tool calls will be automatically approved.
+[ERROR] [IDEClient] Failed to connect to IDE companion extension. Please ensure the extension is running. To install the extension, run /ide install.
+Attempt 1 failed: You have exhausted your capacity on this model. Your quota will reset after 1s.. Retrying after 5729ms...
+Attempt 1 failed: You have exhausted your capacity on this model. Your quota will reset after 2s.. Retrying after 5274ms...
+Attempt 1 failed: You have exhausted your capacity on this model. Your quota will reset after 0s.. Retrying after 5276ms...
+Attempt 2 failed with status 429. Retrying with backoff... GaxiosError: [{
+  "error": {
+    "code": 429,
+    "message": "No capacity available for model gemini-3-flash-preview on the server",
+    "errors": [
+      {
+        "message": "No capacity available for model gemini-3-flash-preview on the server",
+        "domain": "global",
+        "reason": "rateLimitExceeded"
+      }
+    ],
+    "status": "RESOURCE_EXHAUSTED",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+        "reason": "MODEL_CAPACITY_EXHAUSTED",
+        "domain": "cloudcode-pa.googleapis.com",
+        "metadata": {
+          "model": "gemini-3-flash-preview"
+        }
+      }
+    ]
+  }
+}
+]
+    at Gaxios._request (/home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/gaxios/build/src/gaxios.js:142:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async OAuth2Client.requestAsync (/home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/google-auth-library/build/src/auth/oauth2client.js:429:18)
+    at async CodeAssistServer.requestStreamingPost (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/code_assist/server.js:262:21)
+    at async CodeAssistServer.generateContentStream (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/code_assist/server.js:54:27)
+    at async file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/loggingContentGenerator.js:285:26
+    at async file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/telemetry/trace.js:81:20
+    at async retryWithBackoff (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/utils/retry.js:130:28)
+    at async GeminiChat.makeApiCallAndProcessStream (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/geminiChat.js:440:32)
+    at async GeminiChat.streamWithRetries (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/geminiChat.js:266:40) {
+  config: {
+    proxy: 'http://192.168.1.8:8345',
+    url: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse',
+    method: 'POST',
+    params: { alt: 'sse' },
+    headers: {
+      'Content-Type': 'application/json',
+      'User-Agent': 'GeminiCLI/0.34.0/gemini-3-flash-preview (linux; x64) google-api-nodejs-client/9.15.1',
+      Authorization: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+      'x-goog-api-client': 'gl-node/20.18.1'
+    },
+    responseType: 'stream',
+    body: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+    signal: AbortSignal { aborted: false },
+    retry: false,
+    paramsSerializer: [Function: paramsSerializer],
+    validateStatus: [Function: validateStatus],
+    agent: HttpsProxyAgent {
+      _events: [Object: null prototype],
+      _eventsCount: 2,
+      _maxListeners: undefined,
+      options: [Object],
+      requests: [Object: null prototype] {},
+      sockets: [Object: null prototype],
+      freeSockets: [Object: null prototype] {},
+      keepAliveMsecs: 1000,
+      keepAlive: false,
+      maxSockets: Infinity,
+      maxFreeSockets: 256,
+      scheduling: 'lifo',
+      maxTotalSockets: Infinity,
+      totalSocketCount: 1,
+      proxy: URL {},
+      proxyHeaders: {},
+      connectOpts: [Object],
+      [Symbol(shapeMode)]: false,
+      [Symbol(kCapture)]: false,
+      [Symbol(AgentBaseInternalState)]: [Object]
+    },
+    errorRedactor: [Function: defaultErrorRedactor]
+  },
+  response: {
+    config: {
+      proxy: 'http://192.168.1.8:8345',
+      url: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse',
+      method: 'POST',
+      params: [Object],
+      headers: [Object],
+      responseType: 'stream',
+      body: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+      signal: [AbortSignal],
+      retry: false,
+      paramsSerializer: [Function: paramsSerializer],
+      validateStatus: [Function: validateStatus],
+      agent: [HttpsProxyAgent],
+      errorRedactor: [Function: defaultErrorRedactor]
+    },
+    data: '[{\n' +
+      '  "error": {\n' +
+      '    "code": 429,\n' +
+      '    "message": "No capacity available for model gemini-3-flash-preview on the server",\n' +
+      '    "errors": [\n' +
+      '      {\n' +
+      '        "message": "No capacity available for model gemini-3-flash-preview on the server",\n' +
+      '        "domain": "global",\n' +
+      '        "reason": "rateLimitExceeded"\n' +
+      '      }\n' +
+      '    ],\n' +
+      '    "status": "RESOURCE_EXHAUSTED",\n' +
+      '    "details": [\n' +
+      '      {\n' +
+      '        "@type": "type.googleapis.com/google.rpc.ErrorInfo",\n' +
+      '        "reason": "MODEL_CAPACITY_EXHAUSTED",\n' +
+      '        "domain": "cloudcode-pa.googleapis.com",\n' +
+      '        "metadata": {\n' +
+      '          "model": "gemini-3-flash-preview"\n' +
+      '        }\n' +
+      '      }\n' +
+      '    ]\n' +
+      '  }\n' +
+      '}\n' +
+      ']',
+    headers: {
+      'alt-svc': 'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000',
+      connection: 'close',
+      'content-length': '630',
+      'content-type': 'application/json; charset=UTF-8',
+      date: 'Fri, 20 Mar 2026 04:05:01 GMT',
+      server: 'ESF',
+      'server-timing': 'gfet4t7; dur=1663',
+      vary: 'Origin, X-Origin, Referer',
+      'x-cloudaicompanion-trace-id': 'e6443be199541823',
+      'x-content-type-options': 'nosniff',
+      'x-frame-options': 'SAMEORIGIN',
+      'x-xss-protection': '0'
+    },
+    status: 429,
+    statusText: 'Too Many Requests',
+    request: {
+      responseURL: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse'
+    }
+  },
+  error: undefined,
+  status: 429,
+  [Symbol(gaxios-gaxios-error)]: '6.7.1'
+}
+Attempt 1 failed with status 429. Retrying with backoff... GaxiosError: [{
+  "error": {
+    "code": 429,
+    "message": "No capacity available for model gemini-3-flash-preview on the server",
+    "errors": [
+      {
+        "message": "No capacity available for model gemini-3-flash-preview on the server",
+        "domain": "global",
+        "reason": "rateLimitExceeded"
+      }
+    ],
+    "status": "RESOURCE_EXHAUSTED",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+        "reason": "MODEL_CAPACITY_EXHAUSTED",
+        "domain": "cloudcode-pa.googleapis.com",
+        "metadata": {
+          "model": "gemini-3-flash-preview"
+        }
+      }
+    ]
+  }
+}
+]
+    at Gaxios._request (/home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/gaxios/build/src/gaxios.js:142:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async OAuth2Client.requestAsync (/home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/google-auth-library/build/src/auth/oauth2client.js:429:18)
+    at async CodeAssistServer.requestStreamingPost (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/code_assist/server.js:262:21)
+    at async CodeAssistServer.generateContentStream (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/code_assist/server.js:54:27)
+    at async file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/loggingContentGenerator.js:285:26
+    at async file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/telemetry/trace.js:81:20
+    at async retryWithBackoff (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/utils/retry.js:130:28)
+    at async GeminiChat.makeApiCallAndProcessStream (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/geminiChat.js:440:32)
+    at async GeminiChat.streamWithRetries (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/geminiChat.js:266:40) {
+  config: {
+    proxy: 'http://192.168.1.8:8345',
+    url: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse',
+    method: 'POST',
+    params: { alt: 'sse' },
+    headers: {
+      'Content-Type': 'application/json',
+      'User-Agent': 'GeminiCLI/0.34.0/gemini-3-flash-preview (linux; x64) google-api-nodejs-client/9.15.1',
+      Authorization: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+      'x-goog-api-client': 'gl-node/20.18.1'
+    },
+    responseType: 'stream',
+    body: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+    signal: AbortSignal { aborted: false },
+    retry: false,
+    paramsSerializer: [Function: paramsSerializer],
+    validateStatus: [Function: validateStatus],
+    agent: HttpsProxyAgent {
+      _events: [Object: null prototype],
+      _eventsCount: 2,
+      _maxListeners: undefined,
+      options: [Object],
+      requests: [Object: null prototype] {},
+      sockets: [Object: null prototype],
+      freeSockets: [Object: null prototype] {},
+      keepAliveMsecs: 1000,
+      keepAlive: false,
+      maxSockets: Infinity,
+      maxFreeSockets: 256,
+      scheduling: 'lifo',
+      maxTotalSockets: Infinity,
+      totalSocketCount: 1,
+      proxy: URL {},
+      proxyHeaders: {},
+      connectOpts: [Object],
+      [Symbol(shapeMode)]: false,
+      [Symbol(kCapture)]: false,
+      [Symbol(AgentBaseInternalState)]: [Object]
+    },
+    errorRedactor: [Function: defaultErrorRedactor]
+  },
+  response: {
+    config: {
+      proxy: 'http://192.168.1.8:8345',
+      url: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse',
+      method: 'POST',
+      params: [Object],
+      headers: [Object],
+      responseType: 'stream',
+      body: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+      signal: [AbortSignal],
+      retry: false,
+      paramsSerializer: [Function: paramsSerializer],
+      validateStatus: [Function: validateStatus],
+      agent: [HttpsProxyAgent],
+      errorRedactor: [Function: defaultErrorRedactor]
+    },
+    data: '[{\n' +
+      '  "error": {\n' +
+      '    "code": 429,\n' +
+      '    "message": "No capacity available for model gemini-3-flash-preview on the server",\n' +
+      '    "errors": [\n' +
+      '      {\n' +
+      '        "message": "No capacity available for model gemini-3-flash-preview on the server",\n' +
+      '        "domain": "global",\n' +
+      '        "reason": "rateLimitExceeded"\n' +
+      '      }\n' +
+      '    ],\n' +
+      '    "status": "RESOURCE_EXHAUSTED",\n' +
+      '    "details": [\n' +
+      '      {\n' +
+      '        "@type": "type.googleapis.com/google.rpc.ErrorInfo",\n' +
+      '        "reason": "MODEL_CAPACITY_EXHAUSTED",\n' +
+      '        "domain": "cloudcode-pa.googleapis.com",\n' +
+      '        "metadata": {\n' +
+      '          "model": "gemini-3-flash-preview"\n' +
+      '        }\n' +
+      '      }\n' +
+      '    ]\n' +
+      '  }\n' +
+      '}\n' +
+      ']',
+    headers: {
+      'alt-svc': 'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000',
+      connection: 'close',
+      'content-length': '630',
+      'content-type': 'application/json; charset=UTF-8',
+      date: 'Fri, 20 Mar 2026 04:05:43 GMT',
+      server: 'ESF',
+      'server-timing': 'gfet4t7; dur=1737',
+      vary: 'Origin, X-Origin, Referer',
+      'x-cloudaicompanion-trace-id': '723c4101dd210e23',
+      'x-content-type-options': 'nosniff',
+      'x-frame-options': 'SAMEORIGIN',
+      'x-xss-protection': '0'
+    },
+    status: 429,
+    statusText: 'Too Many Requests',
+    request: {
+      responseURL: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse'
+    }
+  },
+  error: undefined,
+  status: 429,
+  [Symbol(gaxios-gaxios-error)]: '6.7.1'
+}
+Attempt 2 failed with status 429. Retrying with backoff... GaxiosError: [{
+  "error": {
+    "code": 429,
+    "message": "No capacity available for model gemini-3-flash-preview on the server",
+    "errors": [
+      {
+        "message": "No capacity available for model gemini-3-flash-preview on the server",
+        "domain": "global",
+        "reason": "rateLimitExceeded"
+      }
+    ],
+    "status": "RESOURCE_EXHAUSTED",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+        "reason": "MODEL_CAPACITY_EXHAUSTED",
+        "domain": "cloudcode-pa.googleapis.com",
+        "metadata": {
+          "model": "gemini-3-flash-preview"
+        }
+      }
+    ]
+  }
+}
+]
+    at Gaxios._request (/home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/gaxios/build/src/gaxios.js:142:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async OAuth2Client.requestAsync (/home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/google-auth-library/build/src/auth/oauth2client.js:429:18)
+    at async CodeAssistServer.requestStreamingPost (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/code_assist/server.js:262:21)
+    at async CodeAssistServer.generateContentStream (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/code_assist/server.js:54:27)
+    at async file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/loggingContentGenerator.js:285:26
+    at async file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/telemetry/trace.js:81:20
+    at async retryWithBackoff (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/utils/retry.js:130:28)
+    at async GeminiChat.makeApiCallAndProcessStream (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/geminiChat.js:440:32)
+    at async GeminiChat.streamWithRetries (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/geminiChat.js:266:40) {
+  config: {
+    proxy: 'http://192.168.1.8:8345',
+    url: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse',
+    method: 'POST',
+    params: { alt: 'sse' },
+    headers: {
+      'Content-Type': 'application/json',
+      'User-Agent': 'GeminiCLI/0.34.0/gemini-3-flash-preview (linux; x64) google-api-nodejs-client/9.15.1',
+      Authorization: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+      'x-goog-api-client': 'gl-node/20.18.1'
+    },
+    responseType: 'stream',
+    body: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+    signal: AbortSignal { aborted: false },
+    retry: false,
+    paramsSerializer: [Function: paramsSerializer],
+    validateStatus: [Function: validateStatus],
+    agent: HttpsProxyAgent {
+      _events: [Object: null prototype],
+      _eventsCount: 2,
+      _maxListeners: undefined,
+      options: [Object],
+      requests: [Object: null prototype] {},
+      sockets: [Object: null prototype],
+      freeSockets: [Object: null prototype] {},
+      keepAliveMsecs: 1000,
+      keepAlive: false,
+      maxSockets: Infinity,
+      maxFreeSockets: 256,
+      scheduling: 'lifo',
+      maxTotalSockets: Infinity,
+      totalSocketCount: 1,
+      proxy: URL {},
+      proxyHeaders: {},
+      connectOpts: [Object],
+      [Symbol(shapeMode)]: false,
+      [Symbol(kCapture)]: false,
+      [Symbol(AgentBaseInternalState)]: [Object]
+    },
+    errorRedactor: [Function: defaultErrorRedactor]
+  },
+  response: {
+    config: {
+      proxy: 'http://192.168.1.8:8345',
+      url: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse',
+      method: 'POST',
+      params: [Object],
+      headers: [Object],
+      responseType: 'stream',
+      body: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+      signal: [AbortSignal],
+      retry: false,
+      paramsSerializer: [Function: paramsSerializer],
+      validateStatus: [Function: validateStatus],
+      agent: [HttpsProxyAgent],
+      errorRedactor: [Function: defaultErrorRedactor]
+    },
+    data: '[{\n' +
+      '  "error": {\n' +
+      '    "code": 429,\n' +
+      '    "message": "No capacity available for model gemini-3-flash-preview on the server",\n' +
+      '    "errors": [\n' +
+      '      {\n' +
+      '        "message": "No capacity available for model gemini-3-flash-preview on the server",\n' +
+      '        "domain": "global",\n' +
+      '        "reason": "rateLimitExceeded"\n' +
+      '      }\n' +
+      '    ],\n' +
+      '    "status": "RESOURCE_EXHAUSTED",\n' +
+      '    "details": [\n' +
+      '      {\n' +
+      '        "@type": "type.googleapis.com/google.rpc.ErrorInfo",\n' +
+      '        "reason": "MODEL_CAPACITY_EXHAUSTED",\n' +
+      '        "domain": "cloudcode-pa.googleapis.com",\n' +
+      '        "metadata": {\n' +
+      '          "model": "gemini-3-flash-preview"\n' +
+      '        }\n' +
+      '      }\n' +
+      '    ]\n' +
+      '  }\n' +
+      '}\n' +
+      ']',
+    headers: {
+      'alt-svc': 'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000',
+      connection: 'close',
+      'content-length': '630',
+      'content-type': 'application/json; charset=UTF-8',
+      date: 'Fri, 20 Mar 2026 04:05:49 GMT',
+      server: 'ESF',
+      'server-timing': 'gfet4t7; dur=1820',
+      vary: 'Origin, X-Origin, Referer',
+      'x-cloudaicompanion-trace-id': '7d4ffe732f4c4442',
+      'x-content-type-options': 'nosniff',
+      'x-frame-options': 'SAMEORIGIN',
+      'x-xss-protection': '0'
+    },
+    status: 429,
+    statusText: 'Too Many Requests',
+    request: {
+      responseURL: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse'
+    }
+  },
+  error: undefined,
+  status: 429,
+  [Symbol(gaxios-gaxios-error)]: '6.7.1'
+}
+Attempt 3 failed with status 429. Retrying with backoff... GaxiosError: [{
+  "error": {
+    "code": 429,
+    "message": "No capacity available for model gemini-3-flash-preview on the server",
+    "errors": [
+      {
+        "message": "No capacity available for model gemini-3-flash-preview on the server",
+        "domain": "global",
+        "reason": "rateLimitExceeded"
+      }
+    ],
+    "status": "RESOURCE_EXHAUSTED",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+        "reason": "MODEL_CAPACITY_EXHAUSTED",
+        "domain": "cloudcode-pa.googleapis.com",
+        "metadata": {
+          "model": "gemini-3-flash-preview"
+        }
+      }
+    ]
+  }
+}
+]
+    at Gaxios._request (/home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/gaxios/build/src/gaxios.js:142:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async OAuth2Client.requestAsync (/home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/google-auth-library/build/src/auth/oauth2client.js:429:18)
+    at async CodeAssistServer.requestStreamingPost (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/code_assist/server.js:262:21)
+    at async CodeAssistServer.generateContentStream (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/code_assist/server.js:54:27)
+    at async file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/loggingContentGenerator.js:285:26
+    at async file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/telemetry/trace.js:81:20
+    at async retryWithBackoff (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/utils/retry.js:130:28)
+    at async GeminiChat.makeApiCallAndProcessStream (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/geminiChat.js:440:32)
+    at async GeminiChat.streamWithRetries (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/geminiChat.js:266:40) {
+  config: {
+    proxy: 'http://192.168.1.8:8345',
+    url: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse',
+    method: 'POST',
+    params: { alt: 'sse' },
+    headers: {
+      'Content-Type': 'application/json',
+      'User-Agent': 'GeminiCLI/0.34.0/gemini-3-flash-preview (linux; x64) google-api-nodejs-client/9.15.1',
+      Authorization: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+      'x-goog-api-client': 'gl-node/20.18.1'
+    },
+    responseType: 'stream',
+    body: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+    signal: AbortSignal { aborted: false },
+    retry: false,
+    paramsSerializer: [Function: paramsSerializer],
+    validateStatus: [Function: validateStatus],
+    agent: HttpsProxyAgent {
+      _events: [Object: null prototype],
+      _eventsCount: 2,
+      _maxListeners: undefined,
+      options: [Object],
+      requests: [Object: null prototype] {},
+      sockets: [Object: null prototype],
+      freeSockets: [Object: null prototype] {},
+      keepAliveMsecs: 1000,
+      keepAlive: false,
+      maxSockets: Infinity,
+      maxFreeSockets: 256,
+      scheduling: 'lifo',
+      maxTotalSockets: Infinity,
+      totalSocketCount: 1,
+      proxy: URL {},
+      proxyHeaders: {},
+      connectOpts: [Object],
+      [Symbol(shapeMode)]: false,
+      [Symbol(kCapture)]: false,
+      [Symbol(AgentBaseInternalState)]: [Object]
+    },
+    errorRedactor: [Function: defaultErrorRedactor]
+  },
+  response: {
+    config: {
+      proxy: 'http://192.168.1.8:8345',
+      url: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse',
+      method: 'POST',
+      params: [Object],
+      headers: [Object],
+      responseType: 'stream',
+      body: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+      signal: [AbortSignal],
+      retry: false,
+      paramsSerializer: [Function: paramsSerializer],
+      validateStatus: [Function: validateStatus],
+      agent: [HttpsProxyAgent],
+      errorRedactor: [Function: defaultErrorRedactor]
+    },
+    data: '[{\n' +
+      '  "error": {\n' +
+      '    "code": 429,\n' +
+      '    "message": "No capacity available for model gemini-3-flash-preview on the server",\n' +
+      '    "errors": [\n' +
+      '      {\n' +
+      '        "message": "No capacity available for model gemini-3-flash-preview on the server",\n' +
+      '        "domain": "global",\n' +
+      '        "reason": "rateLimitExceeded"\n' +
+      '      }\n' +
+      '    ],\n' +
+      '    "status": "RESOURCE_EXHAUSTED",\n' +
+      '    "details": [\n' +
+      '      {\n' +
+      '        "@type": "type.googleapis.com/google.rpc.ErrorInfo",\n' +
+      '        "reason": "MODEL_CAPACITY_EXHAUSTED",\n' +
+      '        "domain": "cloudcode-pa.googleapis.com",\n' +
+      '        "metadata": {\n' +
+      '          "model": "gemini-3-flash-preview"\n' +
+      '        }\n' +
+      '      }\n' +
+      '    ]\n' +
+      '  }\n' +
+      '}\n' +
+      ']',
+    headers: {
+      'alt-svc': 'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000',
+      connection: 'close',
+      'content-length': '630',
+      'content-type': 'application/json; charset=UTF-8',
+      date: 'Fri, 20 Mar 2026 04:06:02 GMT',
+      server: 'ESF',
+      'server-timing': 'gfet4t7; dur=1725',
+      vary: 'Origin, X-Origin, Referer',
+      'x-cloudaicompanion-trace-id': '5b99766c6c0a7730',
+      'x-content-type-options': 'nosniff',
+      'x-frame-options': 'SAMEORIGIN',
+      'x-xss-protection': '0'
+    },
+    status: 429,
+    statusText: 'Too Many Requests',
+    request: {
+      responseURL: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse'
+    }
+  },
+  error: undefined,
+  status: 429,
+  [Symbol(gaxios-gaxios-error)]: '6.7.1'
+}
+Attempt 1 failed with status 429. Retrying with backoff... GaxiosError: [{
+  "error": {
+    "code": 429,
+    "message": "No capacity available for model gemini-3-flash-preview on the server",
+    "errors": [
+      {
+        "message": "No capacity available for model gemini-3-flash-preview on the server",
+        "domain": "global",
+        "reason": "rateLimitExceeded"
+      }
+    ],
+    "status": "RESOURCE_EXHAUSTED",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+        "reason": "MODEL_CAPACITY_EXHAUSTED",
+        "domain": "cloudcode-pa.googleapis.com",
+        "metadata": {
+          "model": "gemini-3-flash-preview"
+        }
+      }
+    ]
+  }
+}
+]
+    at Gaxios._request (/home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/gaxios/build/src/gaxios.js:142:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async OAuth2Client.requestAsync (/home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/google-auth-library/build/src/auth/oauth2client.js:429:18)
+    at async CodeAssistServer.requestStreamingPost (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/code_assist/server.js:262:21)
+    at async CodeAssistServer.generateContentStream (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/code_assist/server.js:54:27)
+    at async file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/loggingContentGenerator.js:285:26
+    at async file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/telemetry/trace.js:81:20
+    at async retryWithBackoff (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/utils/retry.js:130:28)
+    at async GeminiChat.makeApiCallAndProcessStream (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/geminiChat.js:440:32)
+    at async GeminiChat.streamWithRetries (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/geminiChat.js:266:40) {
+  config: {
+    proxy: 'http://192.168.1.8:8345',
+    url: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse',
+    method: 'POST',
+    params: { alt: 'sse' },
+    headers: {
+      'Content-Type': 'application/json',
+      'User-Agent': 'GeminiCLI/0.34.0/gemini-3-flash-preview (linux; x64) google-api-nodejs-client/9.15.1',
+      Authorization: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+      'x-goog-api-client': 'gl-node/20.18.1'
+    },
+    responseType: 'stream',
+    body: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+    signal: AbortSignal { aborted: false },
+    retry: false,
+    paramsSerializer: [Function: paramsSerializer],
+    validateStatus: [Function: validateStatus],
+    agent: HttpsProxyAgent {
+      _events: [Object: null prototype],
+      _eventsCount: 2,
+      _maxListeners: undefined,
+      options: [Object],
+      requests: [Object: null prototype] {},
+      sockets: [Object: null prototype],
+      freeSockets: [Object: null prototype] {},
+      keepAliveMsecs: 1000,
+      keepAlive: false,
+      maxSockets: Infinity,
+      maxFreeSockets: 256,
+      scheduling: 'lifo',
+      maxTotalSockets: Infinity,
+      totalSocketCount: 1,
+      proxy: URL {},
+      proxyHeaders: {},
+      connectOpts: [Object],
+      [Symbol(shapeMode)]: false,
+      [Symbol(kCapture)]: false,
+      [Symbol(AgentBaseInternalState)]: [Object]
+    },
+    errorRedactor: [Function: defaultErrorRedactor]
+  },
+  response: {
+    config: {
+      proxy: 'http://192.168.1.8:8345',
+      url: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse',
+      method: 'POST',
+      params: [Object],
+      headers: [Object],
+      responseType: 'stream',
+      body: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+      signal: [AbortSignal],
+      retry: false,
+      paramsSerializer: [Function: paramsSerializer],
+      validateStatus: [Function: validateStatus],
+      agent: [HttpsProxyAgent],
+      errorRedactor: [Function: defaultErrorRedactor]
+    },
+    data: '[{\n' +
+      '  "error": {\n' +
+      '    "code": 429,\n' +
+      '    "message": "No capacity available for model gemini-3-flash-preview on the server",\n' +
+      '    "errors": [\n' +
+      '      {\n' +
+      '        "message": "No capacity available for model gemini-3-flash-preview on the server",\n' +
+      '        "domain": "global",\n' +
+      '        "reason": "rateLimitExceeded"\n' +
+      '      }\n' +
+      '    ],\n' +
+      '    "status": "RESOURCE_EXHAUSTED",\n' +
+      '    "details": [\n' +
+      '      {\n' +
+      '        "@type": "type.googleapis.com/google.rpc.ErrorInfo",\n' +
+      '        "reason": "MODEL_CAPACITY_EXHAUSTED",\n' +
+      '        "domain": "cloudcode-pa.googleapis.com",\n' +
+      '        "metadata": {\n' +
+      '          "model": "gemini-3-flash-preview"\n' +
+      '        }\n' +
+      '      }\n' +
+      '    ]\n' +
+      '  }\n' +
+      '}\n' +
+      ']',
+    headers: {
+      'alt-svc': 'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000',
+      connection: 'close',
+      'content-length': '630',
+      'content-type': 'application/json; charset=UTF-8',
+      date: 'Fri, 20 Mar 2026 04:06:29 GMT',
+      server: 'ESF',
+      'server-timing': 'gfet4t7; dur=1708',
+      vary: 'Origin, X-Origin, Referer',
+      'x-cloudaicompanion-trace-id': 'e4e1be463daaecec',
+      'x-content-type-options': 'nosniff',
+      'x-frame-options': 'SAMEORIGIN',
+      'x-xss-protection': '0'
+    },
+    status: 429,
+    statusText: 'Too Many Requests',
+    request: {
+      responseURL: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse'
+    }
+  },
+  error: undefined,
+  status: 429,
+  [Symbol(gaxios-gaxios-error)]: '6.7.1'
+}
+Attempt 1 failed with status 429. Retrying with backoff... GaxiosError: [{
+  "error": {
+    "code": 429,
+    "message": "No capacity available for model gemini-3-flash-preview on the server",
+    "errors": [
+      {
+        "message": "No capacity available for model gemini-3-flash-preview on the server",
+        "domain": "global",
+        "reason": "rateLimitExceeded"
+      }
+    ],
+    "status": "RESOURCE_EXHAUSTED",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+        "reason": "MODEL_CAPACITY_EXHAUSTED",
+        "domain": "cloudcode-pa.googleapis.com",
+        "metadata": {
+          "model": "gemini-3-flash-preview"
+        }
+      }
+    ]
+  }
+}
+]
+    at Gaxios._request (/home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/gaxios/build/src/gaxios.js:142:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async OAuth2Client.requestAsync (/home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/google-auth-library/build/src/auth/oauth2client.js:429:18)
+    at async CodeAssistServer.requestStreamingPost (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/code_assist/server.js:262:21)
+    at async CodeAssistServer.generateContentStream (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/code_assist/server.js:54:27)
+    at async file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/loggingContentGenerator.js:285:26
+    at async file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/telemetry/trace.js:81:20
+    at async retryWithBackoff (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/utils/retry.js:130:28)
+    at async GeminiChat.makeApiCallAndProcessStream (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/geminiChat.js:440:32)
+    at async GeminiChat.streamWithRetries (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/geminiChat.js:266:40) {
+  config: {
+    proxy: 'http://192.168.1.8:8345',
+    url: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse',
+    method: 'POST',
+    params: { alt: 'sse' },
+    headers: {
+      'Content-Type': 'application/json',
+      'User-Agent': 'GeminiCLI/0.34.0/gemini-3-flash-preview (linux; x64) google-api-nodejs-client/9.15.1',
+      Authorization: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+      'x-goog-api-client': 'gl-node/20.18.1'
+    },
+    responseType: 'stream',
+    body: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+    signal: AbortSignal { aborted: false },
+    retry: false,
+    paramsSerializer: [Function: paramsSerializer],
+    validateStatus: [Function: validateStatus],
+    agent: HttpsProxyAgent {
+      _events: [Object: null prototype],
+      _eventsCount: 2,
+      _maxListeners: undefined,
+      options: [Object],
+      requests: [Object: null prototype] {},
+      sockets: [Object: null prototype],
+      freeSockets: [Object: null prototype] {},
+      keepAliveMsecs: 1000,
+      keepAlive: false,
+      maxSockets: Infinity,
+      maxFreeSockets: 256,
+      scheduling: 'lifo',
+      maxTotalSockets: Infinity,
+      totalSocketCount: 1,
+      proxy: URL {},
+      proxyHeaders: {},
+      connectOpts: [Object],
+      [Symbol(shapeMode)]: false,
+      [Symbol(kCapture)]: false,
+      [Symbol(AgentBaseInternalState)]: [Object]
+    },
+    errorRedactor: [Function: defaultErrorRedactor]
+  },
+  response: {
+    config: {
+      proxy: 'http://192.168.1.8:8345',
+      url: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse',
+      method: 'POST',
+      params: [Object],
+      headers: [Object],
+      responseType: 'stream',
+      body: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+      signal: [AbortSignal],
+      retry: false,
+      paramsSerializer: [Function: paramsSerializer],
+      validateStatus: [Function: validateStatus],
+      agent: [HttpsProxyAgent],
+      errorRedactor: [Function: defaultErrorRedactor]
+    },
+    data: '[{\n' +
+      '  "error": {\n' +
+      '    "code": 429,\n' +
+      '    "message": "No capacity available for model gemini-3-flash-preview on the server",\n' +
+      '    "errors": [\n' +
+      '      {\n' +
+      '        "message": "No capacity available for model gemini-3-flash-preview on the server",\n' +
+      '        "domain": "global",\n' +
+      '        "reason": "rateLimitExceeded"\n' +
+      '      }\n' +
+      '    ],\n' +
+      '    "status": "RESOURCE_EXHAUSTED",\n' +
+      '    "details": [\n' +
+      '      {\n' +
+      '        "@type": "type.googleapis.com/google.rpc.ErrorInfo",\n' +
+      '        "reason": "MODEL_CAPACITY_EXHAUSTED",\n' +
+      '        "domain": "cloudcode-pa.googleapis.com",\n' +
+      '        "metadata": {\n' +
+      '          "model": "gemini-3-flash-preview"\n' +
+      '        }\n' +
+      '      }\n' +
+      '    ]\n' +
+      '  }\n' +
+      '}\n' +
+      ']',
+    headers: {
+      'alt-svc': 'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000',
+      connection: 'close',
+      'content-length': '630',
+      'content-type': 'application/json; charset=UTF-8',
+      date: 'Fri, 20 Mar 2026 04:06:48 GMT',
+      server: 'ESF',
+      'server-timing': 'gfet4t7; dur=1794',
+      vary: 'Origin, X-Origin, Referer',
+      'x-cloudaicompanion-trace-id': '2717a2305e1a472b',
+      'x-content-type-options': 'nosniff',
+      'x-frame-options': 'SAMEORIGIN',
+      'x-xss-protection': '0'
+    },
+    status: 429,
+    statusText: 'Too Many Requests',
+    request: {
+      responseURL: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse'
+    }
+  },
+  error: undefined,
+  status: 429,
+  [Symbol(gaxios-gaxios-error)]: '6.7.1'
+}
+Attempt 2 failed with status 429. Retrying with backoff... GaxiosError: [{
+  "error": {
+    "code": 429,
+    "message": "No capacity available for model gemini-3-flash-preview on the server",
+    "errors": [
+      {
+        "message": "No capacity available for model gemini-3-flash-preview on the server",
+        "domain": "global",
+        "reason": "rateLimitExceeded"
+      }
+    ],
+    "status": "RESOURCE_EXHAUSTED",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+        "reason": "MODEL_CAPACITY_EXHAUSTED",
+        "domain": "cloudcode-pa.googleapis.com",
+        "metadata": {
+          "model": "gemini-3-flash-preview"
+        }
+      }
+    ]
+  }
+}
+]
+    at Gaxios._request (/home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/gaxios/build/src/gaxios.js:142:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async OAuth2Client.requestAsync (/home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/google-auth-library/build/src/auth/oauth2client.js:429:18)
+    at async CodeAssistServer.requestStreamingPost (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/code_assist/server.js:262:21)
+    at async CodeAssistServer.generateContentStream (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/code_assist/server.js:54:27)
+    at async file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/loggingContentGenerator.js:285:26
+    at async file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/telemetry/trace.js:81:20
+    at async retryWithBackoff (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/utils/retry.js:130:28)
+    at async GeminiChat.makeApiCallAndProcessStream (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/geminiChat.js:440:32)
+    at async GeminiChat.streamWithRetries (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/geminiChat.js:266:40) {
+  config: {
+    proxy: 'http://192.168.1.8:8345',
+    url: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse',
+    method: 'POST',
+    params: { alt: 'sse' },
+    headers: {
+      'Content-Type': 'application/json',
+      'User-Agent': 'GeminiCLI/0.34.0/gemini-3-flash-preview (linux; x64) google-api-nodejs-client/9.15.1',
+      Authorization: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+      'x-goog-api-client': 'gl-node/20.18.1'
+    },
+    responseType: 'stream',
+    body: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+    signal: AbortSignal { aborted: false },
+    retry: false,
+    paramsSerializer: [Function: paramsSerializer],
+    validateStatus: [Function: validateStatus],
+    agent: HttpsProxyAgent {
+      _events: [Object: null prototype],
+      _eventsCount: 2,
+      _maxListeners: undefined,
+      options: [Object],
+      requests: [Object: null prototype] {},
+      sockets: [Object: null prototype],
+      freeSockets: [Object: null prototype] {},
+      keepAliveMsecs: 1000,
+      keepAlive: false,
+      maxSockets: Infinity,
+      maxFreeSockets: 256,
+      scheduling: 'lifo',
+      maxTotalSockets: Infinity,
+      totalSocketCount: 1,
+      proxy: URL {},
+      proxyHeaders: {},
+      connectOpts: [Object],
+      [Symbol(shapeMode)]: false,
+      [Symbol(kCapture)]: false,
+      [Symbol(AgentBaseInternalState)]: [Object]
+    },
+    errorRedactor: [Function: defaultErrorRedactor]
+  },
+  response: {
+    config: {
+      proxy: 'http://192.168.1.8:8345',
+      url: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse',
+      method: 'POST',
+      params: [Object],
+      headers: [Object],
+      responseType: 'stream',
+      body: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+      signal: [AbortSignal],
+      retry: false,
+      paramsSerializer: [Function: paramsSerializer],
+      validateStatus: [Function: validateStatus],
+      agent: [HttpsProxyAgent],
+      errorRedactor: [Function: defaultErrorRedactor]
+    },
+    data: '[{\n' +
+      '  "error": {\n' +
+      '    "code": 429,\n' +
+      '    "message": "No capacity available for model gemini-3-flash-preview on the server",\n' +
+      '    "errors": [\n' +
+      '      {\n' +
+      '        "message": "No capacity available for model gemini-3-flash-preview on the server",\n' +
+      '        "domain": "global",\n' +
+      '        "reason": "rateLimitExceeded"\n' +
+      '      }\n' +
+      '    ],\n' +
+      '    "status": "RESOURCE_EXHAUSTED",\n' +
+      '    "details": [\n' +
+      '      {\n' +
+      '        "@type": "type.googleapis.com/google.rpc.ErrorInfo",\n' +
+      '        "reason": "MODEL_CAPACITY_EXHAUSTED",\n' +
+      '        "domain": "cloudcode-pa.googleapis.com",\n' +
+      '        "metadata": {\n' +
+      '          "model": "gemini-3-flash-preview"\n' +
+      '        }\n' +
+      '      }\n' +
+      '    ]\n' +
+      '  }\n' +
+      '}\n' +
+      ']',
+    headers: {
+      'alt-svc': 'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000',
+      connection: 'close',
+      'content-length': '630',
+      'content-type': 'application/json; charset=UTF-8',
+      date: 'Fri, 20 Mar 2026 04:06:56 GMT',
+      server: 'ESF',
+      'server-timing': 'gfet4t7; dur=1779',
+      vary: 'Origin, X-Origin, Referer',
+      'x-cloudaicompanion-trace-id': 'abf0825bef864cd7',
+      'x-content-type-options': 'nosniff',
+      'x-frame-options': 'SAMEORIGIN',
+      'x-xss-protection': '0'
+    },
+    status: 429,
+    statusText: 'Too Many Requests',
+    request: {
+      responseURL: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse'
+    }
+  },
+  error: undefined,
+  status: 429,
+  [Symbol(gaxios-gaxios-error)]: '6.7.1'
+}
+Attempt 3 failed with status 429. Retrying with backoff... GaxiosError: [{
+  "error": {
+    "code": 429,
+    "message": "No capacity available for model gemini-3-flash-preview on the server",
+    "errors": [
+      {
+        "message": "No capacity available for model gemini-3-flash-preview on the server",
+        "domain": "global",
+        "reason": "rateLimitExceeded"
+      }
+    ],
+    "status": "RESOURCE_EXHAUSTED",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+        "reason": "MODEL_CAPACITY_EXHAUSTED",
+        "domain": "cloudcode-pa.googleapis.com",
+        "metadata": {
+          "model": "gemini-3-flash-preview"
+        }
+      }
+    ]
+  }
+}
+]
+    at Gaxios._request (/home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/gaxios/build/src/gaxios.js:142:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async OAuth2Client.requestAsync (/home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/google-auth-library/build/src/auth/oauth2client.js:429:18)
+    at async CodeAssistServer.requestStreamingPost (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/code_assist/server.js:262:21)
+    at async CodeAssistServer.generateContentStream (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/code_assist/server.js:54:27)
+    at async file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/loggingContentGenerator.js:285:26
+    at async file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/telemetry/trace.js:81:20
+    at async retryWithBackoff (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/utils/retry.js:130:28)
+    at async GeminiChat.makeApiCallAndProcessStream (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/geminiChat.js:440:32)
+    at async GeminiChat.streamWithRetries (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/geminiChat.js:266:40) {
+  config: {
+    proxy: 'http://192.168.1.8:8345',
+    url: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse',
+    method: 'POST',
+    params: { alt: 'sse' },
+    headers: {
+      'Content-Type': 'application/json',
+      'User-Agent': 'GeminiCLI/0.34.0/gemini-3-flash-preview (linux; x64) google-api-nodejs-client/9.15.1',
+      Authorization: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+      'x-goog-api-client': 'gl-node/20.18.1'
+    },
+    responseType: 'stream',
+    body: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+    signal: AbortSignal { aborted: false },
+    retry: false,
+    paramsSerializer: [Function: paramsSerializer],
+    validateStatus: [Function: validateStatus],
+    agent: HttpsProxyAgent {
+      _events: [Object: null prototype],
+      _eventsCount: 2,
+      _maxListeners: undefined,
+      options: [Object],
+      requests: [Object: null prototype] {},
+      sockets: [Object: null prototype],
+      freeSockets: [Object: null prototype] {},
+      keepAliveMsecs: 1000,
+      keepAlive: false,
+      maxSockets: Infinity,
+      maxFreeSockets: 256,
+      scheduling: 'lifo',
+      maxTotalSockets: Infinity,
+      totalSocketCount: 1,
+      proxy: URL {},
+      proxyHeaders: {},
+      connectOpts: [Object],
+      [Symbol(shapeMode)]: false,
+      [Symbol(kCapture)]: false,
+      [Symbol(AgentBaseInternalState)]: [Object]
+    },
+    errorRedactor: [Function: defaultErrorRedactor]
+  },
+  response: {
+    config: {
+      proxy: 'http://192.168.1.8:8345',
+      url: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse',
+      method: 'POST',
+      params: [Object],
+      headers: [Object],
+      responseType: 'stream',
+      body: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+      signal: [AbortSignal],
+      retry: false,
+      paramsSerializer: [Function: paramsSerializer],
+      validateStatus: [Function: validateStatus],
+      agent: [HttpsProxyAgent],
+      errorRedactor: [Function: defaultErrorRedactor]
+    },
+    data: '[{\n' +
+      '  "error": {\n' +
+      '    "code": 429,\n' +
+      '    "message": "No capacity available for model gemini-3-flash-preview on the server",\n' +
+      '    "errors": [\n' +
+      '      {\n' +
+      '        "message": "No capacity available for model gemini-3-flash-preview on the server",\n' +
+      '        "domain": "global",\n' +
+      '        "reason": "rateLimitExceeded"\n' +
+      '      }\n' +
+      '    ],\n' +
+      '    "status": "RESOURCE_EXHAUSTED",\n' +
+      '    "details": [\n' +
+      '      {\n' +
+      '        "@type": "type.googleapis.com/google.rpc.ErrorInfo",\n' +
+      '        "reason": "MODEL_CAPACITY_EXHAUSTED",\n' +
+      '        "domain": "cloudcode-pa.googleapis.com",\n' +
+      '        "metadata": {\n' +
+      '          "model": "gemini-3-flash-preview"\n' +
+      '        }\n' +
+      '      }\n' +
+      '    ]\n' +
+      '  }\n' +
+      '}\n' +
+      ']',
+    headers: {
+      'alt-svc': 'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000',
+      connection: 'close',
+      'content-length': '630',
+      'content-type': 'application/json; charset=UTF-8',
+      date: 'Fri, 20 Mar 2026 04:07:10 GMT',
+      server: 'ESF',
+      'server-timing': 'gfet4t7; dur=1769',
+      vary: 'Origin, X-Origin, Referer',
+      'x-cloudaicompanion-trace-id': 'a18a1033e0c9c120',
+      'x-content-type-options': 'nosniff',
+      'x-frame-options': 'SAMEORIGIN',
+      'x-xss-protection': '0'
+    },
+    status: 429,
+    statusText: 'Too Many Requests',
+    request: {
+      responseURL: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse'
+    }
+  },
+  error: undefined,
+  status: 429,
+  [Symbol(gaxios-gaxios-error)]: '6.7.1'
+}
+Attempt 4 failed with status 429. Retrying with backoff... GaxiosError: [{
+  "error": {
+    "code": 429,
+    "message": "No capacity available for model gemini-3-flash-preview on the server",
+    "errors": [
+      {
+        "message": "No capacity available for model gemini-3-flash-preview on the server",
+        "domain": "global",
+        "reason": "rateLimitExceeded"
+      }
+    ],
+    "status": "RESOURCE_EXHAUSTED",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+        "reason": "MODEL_CAPACITY_EXHAUSTED",
+        "domain": "cloudcode-pa.googleapis.com",
+        "metadata": {
+          "model": "gemini-3-flash-preview"
+        }
+      }
+    ]
+  }
+}
+]
+    at Gaxios._request (/home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/gaxios/build/src/gaxios.js:142:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async OAuth2Client.requestAsync (/home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/google-auth-library/build/src/auth/oauth2client.js:429:18)
+    at async CodeAssistServer.requestStreamingPost (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/code_assist/server.js:262:21)
+    at async CodeAssistServer.generateContentStream (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/code_assist/server.js:54:27)
+    at async file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/loggingContentGenerator.js:285:26
+    at async file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/telemetry/trace.js:81:20
+    at async retryWithBackoff (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/utils/retry.js:130:28)
+    at async GeminiChat.makeApiCallAndProcessStream (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/geminiChat.js:440:32)
+    at async GeminiChat.streamWithRetries (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/geminiChat.js:266:40) {
+  config: {
+    proxy: 'http://192.168.1.8:8345',
+    url: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse',
+    method: 'POST',
+    params: { alt: 'sse' },
+    headers: {
+      'Content-Type': 'application/json',
+      'User-Agent': 'GeminiCLI/0.34.0/gemini-3-flash-preview (linux; x64) google-api-nodejs-client/9.15.1',
+      Authorization: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+      'x-goog-api-client': 'gl-node/20.18.1'
+    },
+    responseType: 'stream',
+    body: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+    signal: AbortSignal { aborted: false },
+    retry: false,
+    paramsSerializer: [Function: paramsSerializer],
+    validateStatus: [Function: validateStatus],
+    agent: HttpsProxyAgent {
+      _events: [Object: null prototype],
+      _eventsCount: 2,
+      _maxListeners: undefined,
+      options: [Object],
+      requests: [Object: null prototype] {},
+      sockets: [Object: null prototype],
+      freeSockets: [Object: null prototype] {},
+      keepAliveMsecs: 1000,
+      keepAlive: false,
+      maxSockets: Infinity,
+      maxFreeSockets: 256,
+      scheduling: 'lifo',
+      maxTotalSockets: Infinity,
+      totalSocketCount: 1,
+      proxy: URL {},
+      proxyHeaders: {},
+      connectOpts: [Object],
+      [Symbol(shapeMode)]: false,
+      [Symbol(kCapture)]: false,
+      [Symbol(AgentBaseInternalState)]: [Object]
+    },
+    errorRedactor: [Function: defaultErrorRedactor]
+  },
+  response: {
+    config: {
+      proxy: 'http://192.168.1.8:8345',
+      url: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse',
+      method: 'POST',
+      params: [Object],
+      headers: [Object],
+      responseType: 'stream',
+      body: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+      signal: [AbortSignal],
+      retry: false,
+      paramsSerializer: [Function: paramsSerializer],
+      validateStatus: [Function: validateStatus],
+      agent: [HttpsProxyAgent],
+      errorRedactor: [Function: defaultErrorRedactor]
+    },
+    data: '[{\n' +
+      '  "error": {\n' +
+      '    "code": 429,\n' +
+      '    "message": "No capacity available for model gemini-3-flash-preview on the server",\n' +
+      '    "errors": [\n' +
+      '      {\n' +
+      '        "message": "No capacity available for model gemini-3-flash-preview on the server",\n' +
+      '        "domain": "global",\n' +
+      '        "reason": "rateLimitExceeded"\n' +
+      '      }\n' +
+      '    ],\n' +
+      '    "status": "RESOURCE_EXHAUSTED",\n' +
+      '    "details": [\n' +
+      '      {\n' +
+      '        "@type": "type.googleapis.com/google.rpc.ErrorInfo",\n' +
+      '        "reason": "MODEL_CAPACITY_EXHAUSTED",\n' +
+      '        "domain": "cloudcode-pa.googleapis.com",\n' +
+      '        "metadata": {\n' +
+      '          "model": "gemini-3-flash-preview"\n' +
+      '        }\n' +
+      '      }\n' +
+      '    ]\n' +
+      '  }\n' +
+      '}\n' +
+      ']',
+    headers: {
+      'alt-svc': 'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000',
+      connection: 'close',
+      'content-length': '630',
+      'content-type': 'application/json; charset=UTF-8',
+      date: 'Fri, 20 Mar 2026 04:07:36 GMT',
+      server: 'ESF',
+      'server-timing': 'gfet4t7; dur=2191',
+      vary: 'Origin, X-Origin, Referer',
+      'x-cloudaicompanion-trace-id': 'f9cebec9033222a4',
+      'x-content-type-options': 'nosniff',
+      'x-frame-options': 'SAMEORIGIN',
+      'x-xss-protection': '0'
+    },
+    status: 429,
+    statusText: 'Too Many Requests',
+    request: {
+      responseURL: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse'
+    }
+  },
+  error: undefined,
+  status: 429,
+  [Symbol(gaxios-gaxios-error)]: '6.7.1'
+}
+Attempt 1 failed with status 429. Retrying with backoff... GaxiosError: [{
+  "error": {
+    "code": 429,
+    "message": "No capacity available for model gemini-3-flash-preview on the server",
+    "errors": [
+      {
+        "message": "No capacity available for model gemini-3-flash-preview on the server",
+        "domain": "global",
+        "reason": "rateLimitExceeded"
+      }
+    ],
+    "status": "RESOURCE_EXHAUSTED",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+        "reason": "MODEL_CAPACITY_EXHAUSTED",
+        "domain": "cloudcode-pa.googleapis.com",
+        "metadata": {
+          "model": "gemini-3-flash-preview"
+        }
+      }
+    ]
+  }
+}
+]
+    at Gaxios._request (/home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/gaxios/build/src/gaxios.js:142:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async OAuth2Client.requestAsync (/home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/google-auth-library/build/src/auth/oauth2client.js:429:18)
+    at async CodeAssistServer.requestStreamingPost (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/code_assist/server.js:262:21)
+    at async CodeAssistServer.generateContentStream (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/code_assist/server.js:54:27)
+    at async file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/loggingContentGenerator.js:285:26
+    at async file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/telemetry/trace.js:81:20
+    at async retryWithBackoff (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/utils/retry.js:130:28)
+    at async GeminiChat.makeApiCallAndProcessStream (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/geminiChat.js:440:32)
+    at async GeminiChat.streamWithRetries (file:///home/seele003/.nvm/versions/node/v20.18.1/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/geminiChat.js:266:40) {
+  config: {
+    proxy: 'http://192.168.1.8:8345',
+    url: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse',
+    method: 'POST',
+    params: { alt: 'sse' },
+    headers: {
+      'Content-Type': 'application/json',
+      'User-Agent': 'GeminiCLI/0.34.0/gemini-3-flash-preview (linux; x64) google-api-nodejs-client/9.15.1',
+      Authorization: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+      'x-goog-api-client': 'gl-node/20.18.1'
+    },
+    responseType: 'stream',
+    body: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+    signal: AbortSignal { aborted: false },
+    retry: false,
+    paramsSerializer: [Function: paramsSerializer],
+    validateStatus: [Function: validateStatus],
+    agent: HttpsProxyAgent {
+      _events: [Object: null prototype],
+      _eventsCount: 2,
+      _maxListeners: undefined,
+      options: [Object],
+      requests: [Object: null prototype] {},
+      sockets: [Object: null prototype],
+      freeSockets: [Object: null prototype] {},
+      keepAliveMsecs: 1000,
+      keepAlive: false,
+      maxSockets: Infinity,
+      maxFreeSockets: 256,
+      scheduling: 'lifo',
+      maxTotalSockets: Infinity,
+      totalSocketCount: 1,
+      proxy: URL {},
+      proxyHeaders: {},
+      connectOpts: [Object],
+      [Symbol(shapeMode)]: false,
+      [Symbol(kCapture)]: false,
+      [Symbol(AgentBaseInternalState)]: [Object]
+    },
+    errorRedactor: [Function: defaultErrorRedactor]
+  },
+  response: {
+    config: {
+      proxy: 'http://192.168.1.8:8345',
+      url: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse',
+      method: 'POST',
+      params: [Object],
+      headers: [Object],
+      responseType: 'stream',
+      body: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+      signal: [AbortSignal],
+      retry: false,
+      paramsSerializer: [Function: paramsSerializer],
+      validateStatus: [Function: validateStatus],
+      agent: [HttpsProxyAgent],
+      errorRedactor: [Function: defaultErrorRedactor]
+    },
+    data: '[{\n' +
+      '  "error": {\n' +
+      '    "code": 429,\n' +
+      '    "message": "No capacity available for model gemini-3-flash-preview on the server",\n' +
+      '    "errors": [\n' +
+      '      {\n' +
+      '        "message": "No capacity available for model gemini-3-flash-preview on the server",\n' +
+      '        "domain": "global",\n' +
+      '        "reason": "rateLimitExceeded"\n' +
+      '      }\n' +
+      '    ],\n' +
+      '    "status": "RESOURCE_EXHAUSTED",\n' +
+      '    "details": [\n' +
+      '      {\n' +
+      '        "@type": "type.googleapis.com/google.rpc.ErrorInfo",\n' +
+      '        "reason": "MODEL_CAPACITY_EXHAUSTED",\n' +
+      '        "domain": "cloudcode-pa.googleapis.com",\n' +
+      '        "metadata": {\n' +
+      '          "model": "gemini-3-flash-preview"\n' +
+      '        }\n' +
+      '      }\n' +
+      '    ]\n' +
+      '  }\n' +
+      '}\n' +
+      ']',
+    headers: {
+      'alt-svc': 'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000',
+      connection: 'close',
+      'content-length': '630',
+      'content-type': 'application/json; charset=UTF-8',
+      date: 'Fri, 20 Mar 2026 04:08:27 GMT',
+      server: 'ESF',
+      'server-timing': 'gfet4t7; dur=1738',
+      vary: 'Origin, X-Origin, Referer',
+      'x-cloudaicompanion-trace-id': '3bd9457c9ee0ae34',
+      'x-content-type-options': 'nosniff',
+      'x-frame-options': 'SAMEORIGIN',
+      'x-xss-protection': '0'
+    },
+    status: 429,
+    statusText: 'Too Many Requests',
+    request: {
+      responseURL: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse'
+    }
+  },
+  error: undefined,
+  status: 429,
+  [Symbol(gaxios-gaxios-error)]: '6.7.1'
+}
+
+
+
+Duration: 274.77 seconds
+Exit code: 0
+============================================================
+      Solver completed in 274.77s
+[3/5] Preparing validation environment...
+[4/5] Running validation...
+      Loaded
+      Running validation in: /tmp/gamedevbench_validation_ad2d17c4 (headless mode)
+Validation result saved to: /home/seele003/TTS/gamedevbench-bp-old/results/task_task_0109.json
+[5/5] Saving results...
+✓ Benchmark cycle completed for task_0109
+  Results saved to: tasks/test_result/task_0109_gemini-cli_20260320_040856
+  Cleaned up sandbox: /tmp/gamedevbench_sandbox_86d6db91
+  Cleaned up validation dir: /tmp/gamedevbench_validation_ad2d17c4
+Progress saved to: /home/seele003/TTS/gamedevbench-bp-old/results/progress_gemini-cli_gemini-3-flash-preview.json
+Final results saved to: /home/seele003/TTS/gamedevbench-bp-old/results/final_results.json
+CSV results saved to: /home/seele003/TTS/gamedevbench-bp-old/results/final_results.csv
+Summary: 4 passed, 0 failed, 0 errors out of 4 total tasks (100.0% success rate on 4 attempted)
+Progress file cleared: /home/seele003/TTS/gamedevbench-bp-old/results/progress_gemini-cli_gemini-3-flash-preview.json
+{
+  "success": 4,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "total_tasks_ran": 4,
+  "tasks_attempted": 4,
+  "task_success_rate": 100.0,
+  "timestamp": "2026-03-20T04:08:56.028749",
+  "configuration": {
+    "agent": "gemini-cli",
+    "model": "gemini-3-flash-preview",
+    "use_mcp": false,
+    "use_runtime_video": false,
+    "skip_display": false,
+    "debug": true
+  },
+  "token_statistics": {
+    "total_input_tokens": 0,
+    "total_output_tokens": 0,
+    "total_tokens": 0,
+    "avg_input_tokens": 0,
+    "avg_output_tokens": 0,
+    "avg_tokens_per_task": 0
+  },
+  "cost_statistics": {
+    "total_cost_usd": 0.0,
+    "avg_cost_per_task_usd": 0.0
+  },
+  "duration_statistics": {
+    "total_duration_seconds": 980.45,
+    "avg_duration_per_task_seconds": 0.0
+  },
+  "tasks": [
+    {
+      "task_name": "task_0022",
+      "success": true,
+      "message": "Spawning markers configured for the trap",
+      "timestamp": "2026-03-20T03:54:33.294536",
+      "agent": "gemini-cli",
+      "model": "gemini-3-flash-preview",
+      "use_mcp": false,
+      "use_runtime_video": false,
+      "skip_display": false,
+      "debug": true,
+      "solver_success": true,
+      "solver_message": "Task completed",
+      "solver_duration": 136.53464198112488,
+      "is_rate_limited": false,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0,
+      "cost_usd": 0.0,
+      "sandbox_dir": "/tmp/gamedevbench_sandbox_170580d1",
+      "result_dir": "tasks/test_result/task_0022_gemini-cli_20260320_035433"
+    },
+    {
+      "task_name": "task_0036",
+      "success": true,
+      "message": "Trait UI updates counts, thresholds, and highlights correctly",
+      "timestamp": "2026-03-20T04:00:20.147176",
+      "agent": "gemini-cli",
+      "model": "gemini-3-flash-preview",
+      "use_mcp": false,
+      "use_runtime_video": false,
+      "skip_display": false,
+      "debug": true,
+      "solver_success": true,
+      "solver_message": "Task completed",
+      "solver_duration": 340.58569145202637,
+      "is_rate_limited": false,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0,
+      "cost_usd": 0.0,
+      "sandbox_dir": "/tmp/gamedevbench_sandbox_315df87e",
+      "result_dir": "tasks/test_result/task_0036_gemini-cli_20260320_040020"
+    },
+    {
+      "task_name": "task_0066",
+      "success": true,
+      "message": "Safe platform duplicates sprite and collision templates with mover support",
+      "timestamp": "2026-03-20T04:04:14.982587",
+      "agent": "gemini-cli",
+      "model": "gemini-3-flash-preview",
+      "use_mcp": false,
+      "use_runtime_video": false,
+      "skip_display": false,
+      "debug": true,
+      "solver_success": true,
+      "solver_message": "Task completed",
+      "solver_duration": 228.5585687160492,
+      "is_rate_limited": false,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0,
+      "cost_usd": 0.0,
+      "sandbox_dir": "/tmp/gamedevbench_sandbox_09944d65",
+      "result_dir": "tasks/test_result/task_0066_gemini-cli_20260320_040414"
+    },
+    {
+      "task_name": "task_0109",
+      "success": true,
+      "message": "Player hurt/fall/grounded animations are configured",
+      "timestamp": "2026-03-20T04:08:56.022644",
+      "agent": "gemini-cli",
+      "model": "gemini-3-flash-preview",
+      "use_mcp": false,
+      "use_runtime_video": false,
+      "skip_display": false,
+      "debug": true,
+      "solver_success": true,
+      "solver_message": "Task completed",
+      "solver_duration": 274.7693672180176,
+      "is_rate_limited": false,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0,
+      "cost_usd": 0.0,
+      "sandbox_dir": "/tmp/gamedevbench_sandbox_86d6db91",
+      "result_dir": "tasks/test_result/task_0109_gemini-cli_20260320_040856"
+    }
+  ],
+  "rate_limited": false
+}
